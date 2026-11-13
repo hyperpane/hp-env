@@ -1,0 +1,7 @@
+{
+  "accent": "#e6c84c",
+  "tagline": "Your .env files, every secret hidden until you look.",
+  "chips": ["Masked values", "Compare", "Git check", "dotenv"],
+  "window": "Env",
+  "illustration": "illustration.svg"
+}

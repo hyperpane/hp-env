@@ -1,0 +1,80 @@
+<g font-family="Inter, -apple-system, 'Segoe UI', sans-serif" font-size="13">
+  <defs>
+    <g id="ev-eye" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></g>
+    <g id="ev-eyeoff" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></g>
+    <g id="ev-copy" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></g>
+    <g id="ev-pencil" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></g>
+    <g id="ev-trash" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></g>
+    <g id="ev-table" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></g>
+    <g id="ev-fileplus" fill="none" stroke="#9aa3b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 15h6"/><path d="M12 18v-6"/></g>
+    <g id="ev-alert" fill="none" stroke="#d29922" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></g>
+  </defs>
+
+  <!-- File tabs and the bar's buttons -->
+  <rect x="0" y="0" width="540" height="44" fill="#0f131c"/>
+  <line x1="0" y1="44" x2="540" y2="44" stroke="#232a38"/>
+  <rect x="10" y="9" width="84" height="26" rx="6" fill="#e6c84c" fill-opacity="0.2"/>
+  <use href="#ev-alert" transform="translate(18 15) scale(0.56)"/>
+  <text x="36" y="27" fill="#f4f6fb" font-weight="500">.env</text><text x="84" y="27" fill="#9aa3b6" text-anchor="end">5</text>
+  <text x="110" y="27" fill="#9aa3b6">.env.local</text><text x="178" y="27" fill="#5d6678">3</text>
+  <text x="198" y="27" fill="#9aa3b6">.env.production</text><text x="302" y="27" fill="#5d6678">9</text>
+  <text x="322" y="27" fill="#9aa3b6" font-style="italic">.env.example</text><text x="408" y="27" fill="#5d6678">7</text>
+  <use href="#ev-eye" transform="translate(446 14) scale(0.66)"/>
+  <use href="#ev-table" transform="translate(476 14) scale(0.66)"/>
+  <use href="#ev-fileplus" transform="translate(506 14) scale(0.66)"/>
+
+  <!-- Git's warning -->
+  <rect x="0" y="45" width="540" height="62" fill="#d29922" fill-opacity="0.12"/>
+  <line x1="0" y1="107" x2="540" y2="107" stroke="#232a38"/>
+  <use href="#ev-alert" transform="translate(14 54) scale(0.6)"/>
+  <g fill="#f4f6fb" font-size="12.5">
+    <text x="36" y="65">.env is committed to git: its secrets are in the repository’s history.</text>
+    <text x="36" y="82">Remove it from git (<tspan font-family="'JetBrains Mono', Menlo, monospace" font-size="11.5" fill="#e6c84c">git rm --cached .env</tspan>), add it to .gitignore,</text>
+    <text x="36" y="99">and change the secrets.</text>
+  </g>
+
+  <!-- The variables -->
+  <g font-family="'JetBrains Mono', Menlo, monospace" font-size="12.5">
+    <text x="14" y="133" fill="#f4f6fb">DATABASE_URL</text>
+    <text x="190" y="133" fill="#9aa3b6" letter-spacing="1">••••••••</text>
+    <line x1="0" y1="145" x2="540" y2="145" stroke="#232a38"/>
+
+    <rect x="0" y="146" width="540" height="37" fill="#ffffff" fill-opacity="0.04"/>
+    <text x="14" y="169" fill="#f4f6fb">STRIPE_SECRET_KEY</text>
+    <text x="190" y="169" fill="#f4f6fb">sk_test_51Nq8x…4fTz</text>
+    <line x1="0" y1="183" x2="540" y2="183" stroke="#232a38"/>
+
+    <text x="14" y="207" fill="#f4f6fb">REDIS_URL</text>
+    <text x="190" y="207" fill="#9aa3b6" letter-spacing="1">••••••••</text>
+    <line x1="0" y1="221" x2="540" y2="221" stroke="#232a38"/>
+
+    <text x="14" y="245" fill="#f4f6fb">JWT_SECRET<tspan fill="#d29922" font-family="Inter, -apple-system, sans-serif" font-size="12"> ×2</tspan></text>
+    <text x="190" y="245" fill="#9aa3b6" letter-spacing="1">••••••••</text>
+    <line x1="0" y1="259" x2="540" y2="259" stroke="#232a38"/>
+
+    <text x="14" y="283" fill="#f4f6fb">SMTP_PASSWORD</text>
+    <text x="190" y="283" fill="#9aa3b6" font-family="Inter, -apple-system, sans-serif" font-style="italic">empty</text>
+    <line x1="0" y1="297" x2="540" y2="297" stroke="#232a38"/>
+  </g>
+  <use href="#ev-eyeoff" transform="translate(428 157) scale(0.58)"/>
+  <use href="#ev-copy" transform="translate(454 157) scale(0.58)"/>
+  <use href="#ev-pencil" transform="translate(480 157) scale(0.58)"/>
+  <use href="#ev-trash" transform="translate(506 157) scale(0.58)"/>
+
+  <!-- Add a variable -->
+  <rect x="12" y="312" width="166" height="26" rx="6" fill="#0c0f15" stroke="#262d3c"/>
+  <text x="22" y="329" fill="#5d6678" font-family="'JetBrains Mono', Menlo, monospace" font-size="12">NEW_VARIABLE</text>
+  <rect x="186" y="312" width="266" height="26" rx="6" fill="#0c0f15" stroke="#262d3c"/>
+  <text x="196" y="329" fill="#5d6678" font-family="'JetBrains Mono', Menlo, monospace" font-size="12">value</text>
+  <rect x="460" y="312" width="68" height="26" rx="6" fill="none" stroke="#262d3c"/>
+  <path d="M474 325h9M478.5 320.5v9" stroke="#9aa3b6" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="490" y="329" fill="#f4f6fb">Add</text>
+
+  <!-- What the example has -->
+  <line x1="0" y1="348" x2="540" y2="348" stroke="#232a38"/>
+  <text x="14" y="370" fill="#9aa3b6" font-size="12">In .env.example, not here (2):</text>
+  <rect x="200" y="356" width="128" height="22" rx="6" fill="#e6c84c" fill-opacity="0.1" stroke="#e6c84c" stroke-opacity="0.4"/>
+  <text x="212" y="371" fill="#f4f6fb" font-family="'JetBrains Mono', Menlo, monospace" font-size="11.5">+ SENTRY_DSN</text>
+  <rect x="336" y="356" width="140" height="22" rx="6" fill="#e6c84c" fill-opacity="0.1" stroke="#e6c84c" stroke-opacity="0.4"/>
+  <text x="348" y="371" fill="#f4f6fb" font-family="'JetBrains Mono', Menlo, monospace" font-size="11.5">+ OPENAI_API_KEY</text>
+</g>

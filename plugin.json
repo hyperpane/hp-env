@@ -4,9 +4,11 @@
   "name": "Env",
   "version": "0.0.1",
   "publisher": "hyperpane",
-  "description": "A project's .env files: variables with their values hidden until you look, edited in place with comments kept, compared across files, and a warning when git has your secrets.",
+  "description": "Your project's .env files, every secret hidden until you look: change values in place with comments kept, compare files side by side, and a warning when git has your secrets.",
   "icon": "icon.svg",
   "category": "DevOps",
+  "homepage": "https://github.com/hyperpane/hp-env",
+  "license": "MIT",
   "engines": { "hyperpane": ">=0.2.0", "node": ">=22.15.0" },
   "client": { "main": "main.tsx" },
   "server": { "runtime": "node", "main": "main.ts" },
@@ -22,7 +24,7 @@
   },
   "signature": {
     "key": "ed25519:5LgmP9NjLnpvz48igrFekSqi+4k6gzaO8sNwlsgNKFc=",
-    "sig": "tTEiGjQ/KlfSSoCY99ragQ2Z4NRs5fJHYQvyay0xHKl/X3W2ct+GEz9qGBvINHFtVpSZ5mrAfveGkAe+zF63Aw==",
-    "server": "7n5VrWYUos7YXLjrbIReLxDDvUG7PvW8rE0ozpa4TjaRWB33hocJn9nJp/EI94OragnpSDej8GJoZ047Yvn+CA=="
+    "sig": "i3EtdSEBxyoKW8oKjZzo8ED/4kpEXPR7JmXXIfomNO/TEn3bK7RZqczuDGow66IAXRrScIo9aCwvWsBg5sktBQ==",
+    "server": "Yff1jGCKSLWvl8GI7eDXQbggHdJNztQEe84ZBVo2p2ONEK11p8AXHFVmU0N51rEMM6kdSmBRm4zQZXCHkvGxDQ=="
   }
 }

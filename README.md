@@ -1,67 +1,86 @@
+![Env](media/banner.svg)
+
 # Env
 
-A project's `.env` files in one window: every variable, with its value
-hidden until you look, changed in place, compared across files, and a
-warning when git has your secrets.
+Your `.env` files, every secret hidden until you look. Env finds every
+`.env` file in your project and shows them in one window: change a value
+without opening an editor, see which file is missing a variable, and get
+warned before a secret ends up in git.
 
-## What it finds
+## Features
 
-`.env`, `.env.<anything>` (`.env.local`, `.env.production`, `.env.example`)
-and `<anything>.env` (`prod.env`), in the project's folder and three levels
-down, not in `node_modules`, `.git`, `dist`, `build`, `target`, `vendor`,
-`.venv` and the like. The project's own come first, then by folder.
+- **A tab per file:** `.env`, `.env.local`, `.env.production`,
+  `prod.env` and the rest, each with how many variables it has.
+- **Values stay hidden** (`••••••••`) until you show one, or all of them;
+  copy a value without showing it.
+- **Edit in place:** double-click a value to change it, a name to rename
+  it, or add a variable in the row at the bottom.
+- **Your file stays yours:** only the variable's own lines change.
+  Comments, blank lines, the order, `export`, quotes and Windows line
+  endings are kept.
+- **Compare:** every variable against every file, with what's `missing`
+  in red (click to add it) and `≠` where the values differ.
+- **Examples:** `.env.example` and its kind show their values, and a file
+  beside one lists what the example has that it hasn't, each with Add.
+- **Git check:** a warning when a secrets file is committed to git, or
+  isn't ignored and could be.
+- **Live:** the window follows changes on disk, from your editor or a
+  script.
 
-`.env.example`, `.env.sample`, `.env.template` (and `-dist`, `-defaults`)
-are **examples**: the variables a project needs, with placeholders. Their
-values are shown; a file beside one lists what the example has that it
-hasn't, each with Add.
+## How to use
 
-## In the window
+1. Open a project, then open Env: **+** on the project, **New env**, or
+   right-click the canvas.
+2. Pick a file's tab. ⚠ marks one that git has, or doesn't ignore.
+3. Click the eye on a row to show its value, or the eye in the bar to show
+   them all.
+4. Double-click a value to change it: Enter saves, Shift+Enter is a new
+   line, Escape cancels.
+5. Click **Compare** in the bar to see every file side by side, or **New
+   .env file** to make one (a copy of the example beside it, when there is
+   one).
 
-- **A tab per file**, with how many variables it has. ⚠ on one that git has
-  committed, or doesn't ignore.
-- **Values are hidden** (`••••••••`): the eye on a row shows it, the eye in
-  the bar shows them all. Copy puts a value on the clipboard.
-- **Double-click** a value (or the pencil) to change it; a name, to rename
-  it. Enter saves, Shift+Enter is a new line, Escape cancels. The row at the
-  bottom adds one.
-- **Compare**: every variable against every file, `missing` in red (click
-  to add it), `≠` where they differ.
-- **New .env file**: in the project's folder or one in it; a copy of the
-  example beside it, when there is one.
+## Good to know
 
-## Changes keep the file as it was
+- **What it finds:** `.env`, `.env.<anything>` and `<anything>.env`, in
+  the project's folder and three levels down, not in `node_modules`,
+  `.git`, `dist`, `build`, `target`, `vendor`, `.venv` and the like. The
+  project's own come first, then by folder.
+- **Examples** are `.env.example`, `.env.sample`, `.env.template` (and
+  `-dist`, `-defaults`): the variables a project needs, with placeholders.
+- **A file committed to git** has its secrets in the repository's history:
+  remove it from git (`git rm --cached`), add it to `.gitignore`, and
+  change the secrets. **One that isn't ignored** could be committed: add it
+  to `.gitignore`. Without git, or outside a repository, nothing's said.
+- **An edit is made on the file as the window saw it.** If the file
+  changed on disk since, the edit is refused and the window shows the file
+  as it is now.
+- **A variable that's there twice** shows `×2`: the last one counts, and
+  is the one changed.
+- Files over 1 MB aren't shown: open them in the Editor.
 
-Only the variable's own lines change: comments, blank lines, the order,
-`export`, indentation, other quotes and Windows line endings stay. A new
-variable goes after the last one. A value is written bare when it can be,
-in `'single'` quotes when it has spaces or `#`, in `"double"` quotes (with
-`\n`) when it has line breaks or quotes, so it reads back the same.
+## How it works
 
-An edit is made on the file as the window saw it: if it changed on disk
-since (your editor, a script), the edit is refused and the window shows the
-file as it is now. The window follows changes on disk by itself.
+The server part reads the files and asks git about each one: whether it's
+committed (`git ls-files`) and whether it's ignored (`git check-ignore
+--no-index`).
 
 What's read is what dotenv reads: `KEY=value`, `export KEY=value`, values
 bare (up to a ` #` comment), `'single'`, `"double"` (with `\n`, `\t`,
-`\"`, `\\`) or `` `backticks` ``, quoted ones over several lines. A key
-that's there twice shows `×2`: the last one counts, and is the one changed.
-Lines that aren't a variable are kept, and said.
+`\"`, `\\`) or `` `backticks` ``, quoted ones over several lines. Lines
+that aren't a variable are kept, and said.
 
-## Git
-
-For each file, git is asked whether it's committed (`git ls-files`) and
-whether it's ignored (`git check-ignore --no-index`):
-
-- **committed** (not an example): its secrets are in the repository's
-  history. Remove it from git (`git rm --cached`), ignore it, and change
-  the secrets.
-- **not ignored**: it could be committed. Add it to `.gitignore`.
-
-No git, or not a repository: nothing's said.
+A new variable goes after the last one. A value is written bare when it
+can be, in `'single'` quotes when it has spaces or `#`, in `"double"`
+quotes (with `\n`) when it has line breaks or quotes, so it reads back the
+same.
 
 ## Develop
 
 ```sh
 ./build.sh --test
 ```
+
+## License
+
+MIT, © 2026 Astralyx. See [LICENSE](LICENSE).
