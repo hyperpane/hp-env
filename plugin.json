@@ -9,22 +9,47 @@
   "category": "DevOps",
   "homepage": "https://github.com/hyperpane/hp-env",
   "license": "MIT",
-  "engines": { "hyperpane": ">=0.2.0", "node": ">=22.15.0" },
-  "client": { "main": "main.tsx" },
-  "server": { "runtime": "node", "main": "main.ts" },
+  "engines": {
+    "hyperpane": ">=0.2.2",
+    "node": ">=22.15.0"
+  },
+  "client": {
+    "main": "main.tsx"
+  },
+  "server": {
+    "runtime": "node",
+    "main": "main.ts"
+  },
   "contributes": {
     "nodes": [
       {
         "kind": "env",
         "title": "Env",
         "icon": "icon.svg",
-        "size": [520, 380]
+        "size": [
+          520,
+          380
+        ],
+        "opens": [
+          {
+            "glob": ".env",
+            "score": 10
+          },
+          {
+            "glob": ".env.*",
+            "score": 10
+          },
+          {
+            "glob": "*.env",
+            "score": 10
+          }
+        ]
       }
     ]
   },
   "signature": {
     "key": "ed25519:5LgmP9NjLnpvz48igrFekSqi+4k6gzaO8sNwlsgNKFc=",
-    "sig": "i3EtdSEBxyoKW8oKjZzo8ED/4kpEXPR7JmXXIfomNO/TEn3bK7RZqczuDGow66IAXRrScIo9aCwvWsBg5sktBQ==",
-    "server": "Yff1jGCKSLWvl8GI7eDXQbggHdJNztQEe84ZBVo2p2ONEK11p8AXHFVmU0N51rEMM6kdSmBRm4zQZXCHkvGxDQ=="
+    "sig": "ingzPABGteGKwN7uIDYDyFrJndXB+AtuEGdOcTFGCd9YKOSDx92Yq7rAnsUTR/4KvRmACI1CyBFzwAmS3JXeCQ==",
+    "server": "JzXYccNEerzXXMod/SeHwDHnhInnutRE4gipEpT0JaBcq/ET/XMWzcrJ36jVTSSYZsxlNc1RC8awPxRVHxuMBw=="
   }
 }

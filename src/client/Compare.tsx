@@ -1,28 +1,52 @@
 // Compare: every variable in every file, in one table, the ones that differ
-// marked, and a click on a missing one to add it there.
+// marked, and a click on a missing one to add it there. Each column is as
+// wide as it was dragged (kept on this machine, a file's by its path); what's
+// left over stays empty at the end.
 
 import { useMemo } from 'react';
 import { useHost } from '@hyperpane/sdk/client';
-import { cn } from '@hyperpane/ui';
+import { ColumnResizer, cn, styles, useColumnWidths } from '@hyperpane/ui';
 import type { EnvFile } from '../shared/index.ts';
 import { type Call, MASK } from './lib.ts';
+
+/** The first widths: the variables', and each file's. */
+const VARIABLE = 220;
+const FILE = 192;
 
 /** Every variable (rows) in every file (columns): set, empty, or missing. */
 export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boolean; call: Call }) {
   const host = useHost();
   const shownFiles = files.filter((f) => !f.tooBig);
-  const keys = useMemo(() => [...new Set(shownFiles.flatMap((f) => f.entries.map((e) => e.key)))].sort(), [shownFiles]);
-  const value = (f: EnvFile, key: string) => f.entries.filter((e) => e.key === key).at(-1)?.value;
+  // What counts: the variables that are on (a commented-out one isn't there).
+  const keys = useMemo(() => [...new Set(shownFiles.flatMap((f) => f.entries.filter((e) => !e.disabled).map((e) => e.key)))].sort(), [shownFiles]);
+  const value = (f: EnvFile, key: string) => f.entries.filter((e) => e.key === key && !e.disabled).at(-1)?.value;
+  // `variable` is the first column; every other key is a file's path.
+  const cols = useColumnWidths<string>('env.compare', { variable: VARIABLE, ...Object.fromEntries(shownFiles.map((f) => [f.path, FILE])) }, { min: 48, max: 800 });
+  // A file opened since: as wide as a file's column starts.
+  const width = (k: string) => cols.widths[k] ?? (k === 'variable' ? VARIABLE : FILE);
+  const resizer = (k: string) => <ColumnResizer width={width(k)} onResize={(w) => cols.set(k, w)} onReset={() => cols.set(k, k === 'variable' ? VARIABLE : FILE)} />;
   return (
-    <table className="w-full border-collapse text-xs">
-      <thead>
-        <tr className="sticky top-0 bg-[var(--node-bg)]">
-          <th className="border-b border-[var(--node-border)] px-2 py-1 text-left font-medium">Variable</th>
+    <table className="w-full table-fixed border-collapse text-xs">
+      <colgroup>
+        <col style={{ width: width('variable') }} />
+        {shownFiles.map((f) => (
+          <col key={f.path} style={{ width: width(f.path) }} />
+        ))}
+        <col />
+      </colgroup>
+      <thead className={cn(styles.stickyTableHead, 'bg-[var(--node-bg)]')}>
+        <tr>
+          <th className="relative truncate border-b border-[var(--node-border)] px-2 py-1 text-left font-medium">
+            Variable
+            {resizer('variable')}
+          </th>
           {shownFiles.map((f) => (
-            <th key={f.path} className={cn('border-b border-[var(--node-border)] px-2 py-1 text-left font-medium', f.example && 'italic')}>
+            <th key={f.path} className={cn('relative truncate border-b border-[var(--node-border)] px-2 py-1 text-left font-medium', f.example && 'italic')} title={f.path}>
               {f.path}
+              {resizer(f.path)}
             </th>
           ))}
+          <th className="border-b border-[var(--node-border)]" />
         </tr>
       </thead>
       <tbody>
@@ -31,7 +55,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
           const differ = new Set(values.filter((x) => x !== undefined)).size > 1;
           return (
             <tr key={key} className="hover:bg-[var(--node-hover)]">
-              <td className="border-b border-[var(--node-border)] px-2 py-1 font-mono">
+              <td className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono" title={key}>
                 {key}
                 {differ && (
                   <span className="ml-1 text-[var(--node-muted)]" title="Not the same in every file">
@@ -42,7 +66,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
               {shownFiles.map((f, i) => {
                 const val = values[i];
                 return (
-                  <td key={f.path} className="max-w-48 truncate border-b border-[var(--node-border)] px-2 py-1 font-mono">
+                  <td key={f.path} className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono">
                     {val === undefined ? (
                       <button
                         type="button"
@@ -65,6 +89,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
                   </td>
                 );
               })}
+              <td className="border-b border-[var(--node-border)]" />
             </tr>
           );
         })}

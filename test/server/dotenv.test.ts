@@ -3,7 +3,7 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { encode, parse, remove, rename, set } from '../../src/server/dotenv.ts';
+import { encode, parse, remove, rename, set, toggle } from '../../src/server/dotenv.ts';
 
 const FILE = `# The database
 DATABASE_URL=postgres://localhost/app   # local
@@ -65,4 +65,35 @@ test('values are written so they read back the same', () => {
     const back = parse(`K=${encode(value)}\n`).entries[0].value;
     assert.equal(back, value, `${JSON.stringify(value)} written as ${encode(value)}`);
   }
+});
+
+test('a commented variable is a disabled one; a plain comment isn’t', () => {
+  const p = parse('# Database\n# DATABASE_URL=postgres://prod\nDATABASE_URL=postgres://local\n#export TOKEN="a b" # old\n#   DEBUG=1\n# Set this = later\n## Notes\n');
+  assert.deepEqual(
+    p.entries.map((e) => [e.key, e.value, e.line, e.disabled]),
+    [
+      ['DATABASE_URL', 'postgres://prod', 2, true],
+      ['DATABASE_URL', 'postgres://local', 3, false],
+      ['TOKEN', 'a b', 4, true],
+      ['DEBUG', '1', 5, true],
+    ],
+  );
+  assert.deepEqual(p.unreadable, []);
+});
+
+test('turning one on turns the other of its name off, as written', () => {
+  const src = '# DATABASE_URL=postgres://prod\nDATABASE_URL=postgres://local\n';
+  assert.equal(toggle(src, 1, true), 'DATABASE_URL=postgres://prod\n# DATABASE_URL=postgres://local\n');
+  assert.equal(toggle(src, 2, false), '# DATABASE_URL=postgres://prod\n# DATABASE_URL=postgres://local\n');
+  assert.equal(toggle('#export TOKEN=x # old\r\n', 1, true), 'export TOKEN=x # old\r\n');
+  assert.equal(toggle(src, 2, true), src);
+});
+
+test('an edit goes to its own line: a disabled one stays disabled', () => {
+  const src = '# URL=prod\nURL=local\n';
+  assert.equal(set(src, 'URL', 'staging', 1), '# URL=staging\nURL=local\n');
+  assert.equal(set(src, 'URL', 'dev'), '# URL=prod\nURL=dev\n');
+  assert.equal(remove(src, 'URL', 1), 'URL=local\n');
+  assert.equal(rename(src, 'URL', 'OLD_URL', 1), '# OLD_URL=prod\nURL=local\n');
+  assert.equal(remove(src, 'URL'), '\n');
 });

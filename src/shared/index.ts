@@ -7,8 +7,10 @@ export interface EnvEntry {
   /** 1-based. */
   line: number;
   /** The key is in the file more than once: this one isn't the one that
-   * counts (the last one does). */
+   * counts (the last one on does). */
   shadowed: boolean;
+  /** Commented out (`# KEY=value`): in the file, but not used. */
+  disabled: boolean;
 }
 
 export interface EnvFile {

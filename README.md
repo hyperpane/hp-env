@@ -9,12 +9,18 @@ warned before a secret ends up in git.
 
 ## Features
 
-- **A tab per file:** `.env`, `.env.local`, `.env.production`,
-  `prod.env` and the rest, each with how many variables it has.
+- **Every file in one list:** `.env`, `.env.local`, `.env.production`,
+  `prod.env` and the rest, picked from the list at the top, each with how
+  many variables are on.
 - **Values stay hidden** (`••••••••`) until you show one, or all of them;
   copy a value without showing it.
 - **Edit in place:** double-click a value to change it, a name to rename
   it, or add a variable in the row at the bottom.
+- **On and off:** a commented-out variable (`# DATABASE_URL=…`) shows
+  unticked. Tick it to use it, and any other line of that name is commented
+  out, so switching between a production and a local value is one click.
+  Untick a variable to comment it out. A filter and **Show off** narrow the
+  list.
 - **Your file stays yours:** only the variable's own lines change.
   Comments, blank lines, the order, `export`, quotes and Windows line
   endings are kept.
@@ -26,12 +32,17 @@ warned before a secret ends up in git.
   isn't ignored and could be.
 - **Live:** the window follows changes on disk, from your editor or a
   script.
+- **Opens .env files:** opening `.env`, `.env.*` or `*.env` from Explorer
+  (or dropping one on the canvas) shows it here (picked in the list), in the Env
+  window that's open if there is one. **Open With…** in Explorer's menu opens it in the
+  Editor instead.
 
 ## How to use
 
 1. Open a project, then open Env: **+** on the project, **New env**, or
    right-click the canvas.
-2. Pick a file's tab. ⚠ marks one that git has, or doesn't ignore.
+2. Pick a file from the list at the top. ⚠ marks one that git has, or
+   doesn't ignore.
 3. Click the eye on a row to show its value, or the eye in the bar to show
    them all.
 4. Double-click a value to change it: Enter saves, Shift+Enter is a new

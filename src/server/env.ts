@@ -11,7 +11,7 @@ import { readFile, rename as renameFile, stat, writeFile } from 'node:fs/promise
 import path from 'node:path';
 import { type Host, PluginError } from '@hyperpane/sdk/server';
 import { type EnvFile, type EnvState, KEY_NAME, isEnvName, isExampleName } from '../shared/index.ts';
-import { parse, remove, rename, set } from './dotenv.ts';
+import { parse, remove, rename, set, toggle } from './dotenv.ts';
 import { find } from './find.ts';
 import { type GitState, gitState } from './git.ts';
 
@@ -75,10 +75,11 @@ export class Env {
     const bytes = await readFile(full).catch(() => null);
     if (!bytes) return null;
     const p = parse(bytes.toString('utf8'));
-    const last = new Map(p.entries.map((e, i) => [e.key, i]));
+    // The one that counts: the last of a key that's on.
+    const last = new Map(p.entries.flatMap((e, i) => (e.disabled ? [] : [[e.key, i] as const])));
     return {
       ...base,
-      entries: p.entries.map((e, i) => ({ key: e.key, value: e.value, line: e.line, shadowed: last.get(e.key) !== i })),
+      entries: p.entries.map((e, i) => ({ key: e.key, value: e.value, line: e.line, shadowed: !e.disabled && last.get(e.key) !== i, disabled: e.disabled })),
       unreadable: p.unreadable,
       version: version(bytes),
       tooBig: false,
@@ -154,29 +155,47 @@ export class Env {
     return null;
   }
 
-  setVar(project: string, file: unknown, key: unknown, value: unknown, expected: unknown) {
+  setVar(project: string, file: unknown, key: unknown, value: unknown, expected: unknown, line?: unknown) {
     const k = this.#key(key);
+    const at = lineOf(line);
     if (typeof value !== 'string') throw new PluginError('A value is text.');
     if (value.length > 65_536) throw new PluginError('That value is too long (64 KB at most).');
-    return this.#change(project, file, expected, (text) => set(text, k, value));
-  }
-
-  removeVar(project: string, file: unknown, key: unknown, expected: unknown) {
-    const k = this.#key(key);
     return this.#change(project, file, expected, (text) => {
-      if (!parse(text).entries.some((e) => e.key === k)) throw new PluginError(`${k} isn’t in ${file}.`);
-      return remove(text, k);
+      if (at !== undefined && !parse(text).entries.some((e) => e.key === k && e.line === at)) throw new PluginError(`${k} isn’t on line ${at} of ${file} any more.`);
+      return set(text, k, value, at);
     });
   }
 
-  renameVar(project: string, file: unknown, key: unknown, to: unknown, expected: unknown) {
+  removeVar(project: string, file: unknown, key: unknown, expected: unknown, line?: unknown) {
+    const k = this.#key(key);
+    const at = lineOf(line);
+    return this.#change(project, file, expected, (text) => {
+      if (!parse(text).entries.some((e) => e.key === k && (at === undefined || e.line === at))) throw new PluginError(`${k} isn’t in ${file}.`);
+      return remove(text, k, at);
+    });
+  }
+
+  renameVar(project: string, file: unknown, key: unknown, to: unknown, expected: unknown, line?: unknown) {
     const k = this.#key(key);
     const t = this.#key(to);
+    const at = lineOf(line);
     return this.#change(project, file, expected, (text) => {
-      const keys = parse(text).entries.map((e) => e.key);
-      if (!keys.includes(k)) throw new PluginError(`${k} isn’t in ${file}.`);
-      if (k !== t && keys.includes(t)) throw new PluginError(`${file} already has ${t}.`);
-      return rename(text, k, t);
+      const entries = parse(text).entries;
+      if (!entries.some((e) => e.key === k && (at === undefined || e.line === at))) throw new PluginError(`${k} isn’t in ${file}.`);
+      // Another one on with that name would hide (or be hidden by) it.
+      if (k !== t && entries.some((e) => e.key === t && !e.disabled)) throw new PluginError(`${file} already has ${t}.`);
+      return rename(text, k, t, at);
+    });
+  }
+
+  /** Turns the variable on `line` on (uncommented, the others of its name
+   * off) or off (commented out). */
+  toggleVar(project: string, file: unknown, line: unknown, on: unknown, expected: unknown) {
+    const at = lineOf(line);
+    if (at === undefined) throw new PluginError('Say which line.');
+    return this.#change(project, file, expected, (text) => {
+      if (!parse(text).entries.some((e) => e.line === at)) throw new PluginError(`There’s no variable on line ${at} of ${file} any more.`);
+      return toggle(text, at, on === true);
     });
   }
 
@@ -202,4 +221,12 @@ export class Env {
     if (typeof key !== 'string' || !KEY_NAME.test(key)) throw new PluginError(`“${String(key)}” isn’t a variable’s name: letters, digits and _ (and . or -), not starting with a digit.`);
     return key;
   }
+}
+
+/** A 1-based line, or undefined when none was given. */
+function lineOf(line: unknown): number | undefined {
+  if (line === undefined || line === null) return undefined;
+  const n = Number(line);
+  if (!Number.isInteger(n) || n < 1) throw new PluginError('A line is a number from 1.');
+  return n;
 }
