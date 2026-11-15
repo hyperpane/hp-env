@@ -20,7 +20,7 @@ export async function newFile(host: ReturnType<typeof useHost>, call: Call, file
   const example = files.find((f) => f.example && !f.path.includes('/'));
   const name = await host.ui.prompt({
     title: 'New .env file',
-    label: example ? `Starts as a copy of ${example.path}.` : 'An empty file in the project’s folder (or a folder in it: apps/web/.env).',
+    label: example ? `Starts as a copy of ${example.path}` : 'An empty file in the project’s folder (or a folder in it: apps/web/.env)',
     value: files.some((f) => f.path === '.env') ? '.env.local' : '.env',
   });
   if (!name) return;

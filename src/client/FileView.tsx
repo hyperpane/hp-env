@@ -41,7 +41,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
       else n.add(line);
       return n;
     });
-  const keyProblem = adding.key && !KEY_NAME.test(adding.key) ? 'Letters, digits and _, not starting with a digit.' : keys.has(adding.key) ? 'It’s there already.' : null;
+  const keyProblem = adding.key && !KEY_NAME.test(adding.key) ? 'Letters, digits and _, not starting with a digit' : keys.has(adding.key) ? 'It’s there already' : null;
 
   return (
     <div className="flex flex-col">
@@ -81,7 +81,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           <span />
         </div>
       )}
-      {rows.length === 0 && <p className="px-2 py-3 text-[var(--node-muted)]">Nothing in it yet.</p>}
+      {rows.length === 0 && <p className="px-2 py-3 text-[var(--node-muted)]">Nothing in it yet</p>}
       {rows.length > 0 && visible.length === 0 && <p className="px-2 py-3 text-[var(--node-muted)]">No variable matches “{filter}”.</p>}
       {visible.map((e) => (
         <Row
@@ -98,7 +98,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           onSave={(value) => call({ op: 'set', ...v, key: e.key, value, line: e.line })}
           onRename={(to) => call({ op: 'rename', ...v, key: e.key, to, line: e.line })}
           onRemove={async () => {
-            if (await host.ui.confirm({ title: `Remove ${e.key}?`, message: `Line ${e.line} of ${file.path}${e.disabled ? ' (it’s commented out)' : ''}.`, confirm: 'Remove', destructive: true })) void call({ op: 'remove', ...v, key: e.key, line: e.line });
+            if (await host.ui.confirm({ title: `Remove ${e.key}?`, message: `Line ${e.line} of ${file.path}${e.disabled ? ' (it’s commented out)' : ''}`, confirm: 'Remove', destructive: true })) void call({ op: 'remove', ...v, key: e.key, line: e.line });
           }}
         />
       ))}

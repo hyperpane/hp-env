@@ -55,7 +55,7 @@ export function Row(props: {
         <button type="button" className={cn('flex min-w-0 items-center gap-1.5 pr-2 text-left font-mono', off && 'text-[var(--node-muted)]')} title={`${props.name} (line ${props.line}). Double-click to rename.`} onDoubleClick={() => start('name')}>
           <span className={cn('truncate', off && 'line-through decoration-[color-mix(in_srgb,var(--node-muted)_60%,transparent)]')}>{props.name}</span>
           {props.twice && !off && (
-            <span className="flex-none rounded-[3px] bg-[color-mix(in_srgb,var(--ansi-3)_18%,transparent)] px-1 text-[10px] text-[var(--ansi-3)]" title="It’s on more than once: this one counts (the last).">
+            <span className="flex-none rounded-[3px] bg-[color-mix(in_srgb,var(--ansi-3)_18%,transparent)] px-1 text-[10px] text-[var(--ansi-3)]" title="It’s on more than once: this one counts (the last)">
               ×2
             </span>
           )}

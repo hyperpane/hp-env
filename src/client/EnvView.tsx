@@ -51,10 +51,10 @@ export function EnvView() {
     return host.subscribe<EnvState>(ID, { op: 'watch', project: project.id }, setState, { onEnd: (e) => e && setError(e) });
   }, [project?.id, host]);
 
-  if (!project) return <NodeMessage>Open a project to see its .env files.</NodeMessage>;
+  if (!project) return <NodeMessage>Open a project to see its .env files</NodeMessage>;
   if (error) return <NodeMessage error>{error}</NodeMessage>;
-  if (!state) return <NodeMessage>Looking for .env files…</NodeMessage>;
-  if (state.elsewhere) return <NodeMessage>This project’s folder is on another server.</NodeMessage>;
+  if (!state) return <NodeMessage>Looking for .env files</NodeMessage>;
+  if (state.elsewhere) return <NodeMessage>This project’s folder is on another server</NodeMessage>;
 
   const call: Call = (req) =>
     host.call(ID, { project: project.id, ...req }).then(
@@ -101,7 +101,7 @@ export function EnvView() {
 function NoFiles({ call }: { call: Call }) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center text-xs text-[var(--node-muted)]">
-      <p>No .env files in this project.</p>
+      <p>No .env files in this project</p>
       <NodeButton onClick={() => void call({ op: 'create', file: '.env' })}>
         <FilePlus />
         Create .env

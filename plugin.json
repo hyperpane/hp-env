@@ -2,7 +2,7 @@
   "manifest": 1,
   "id": "env",
   "name": "Env",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "hyperpane",
   "description": "Your project's .env files, every secret hidden until you look: change values in place with comments kept, compare files side by side, and a warning when git has your secrets.",
   "icon": "icon.svg",
@@ -49,7 +49,7 @@
   },
   "signature": {
     "key": "ed25519:5LgmP9NjLnpvz48igrFekSqi+4k6gzaO8sNwlsgNKFc=",
-    "sig": "Hz5Wcy8TaLflZw0UpZKer94yP3AUwcW1eyuPXMRCOQoAyN/N9nqhEoF2PErPCeiUhtWcKsEXWskCy6wRvSpvAA==",
-    "server": "JzXYccNEerzXXMod/SeHwDHnhInnutRE4gipEpT0JaBcq/ET/XMWzcrJ36jVTSSYZsxlNc1RC8awPxRVHxuMBw=="
+    "sig": "qZT4xkcGh/4yHo7GjbMOmR0j46Pp1EZskCvw8FjJjVDVfOb5uUcej7AhLH56XAz2Ds6ec4463rvd6axn+1MsAw==",
+    "server": "gauHz8HvmTnzZ2Rro/GrejuAawlwNjdLlqfn0mVJJcGappgaaNHGTA6Fm7j0h5CpoALbZKZ++T/iuv6FXr/gBQ=="
   }
 }
