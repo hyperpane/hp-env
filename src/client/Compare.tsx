@@ -21,10 +21,16 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
   const keys = useMemo(() => [...new Set(shownFiles.flatMap((f) => f.entries.filter((e) => !e.disabled).map((e) => e.key)))].sort(), [shownFiles]);
   const value = (f: EnvFile, key: string) => f.entries.filter((e) => e.key === key && !e.disabled).at(-1)?.value;
   // `variable` is the first column; every other key is a file's path.
-  const cols = useColumnWidths<string>('env.compare', { variable: VARIABLE, ...Object.fromEntries(shownFiles.map((f) => [f.path, FILE])) }, { min: 48, max: 800 });
+  const cols = useColumnWidths<string>(
+    'env.compare',
+    { variable: VARIABLE, ...Object.fromEntries(shownFiles.map((f) => [f.path, FILE])) },
+    { min: 48, max: 800 },
+  );
   // A file opened since: as wide as a file's column starts.
   const width = (k: string) => cols.widths[k] ?? (k === 'variable' ? VARIABLE : FILE);
-  const resizer = (k: string) => <ColumnResizer width={width(k)} onResize={(w) => cols.set(k, w)} onReset={() => cols.set(k, k === 'variable' ? VARIABLE : FILE)} />;
+  const resizer = (k: string) => (
+    <ColumnResizer width={width(k)} onResize={(w) => cols.set(k, w)} onReset={() => cols.set(k, k === 'variable' ? VARIABLE : FILE)} />
+  );
   return (
     <table className="w-full table-fixed border-collapse text-xs">
       <colgroup>
@@ -41,7 +47,11 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
             {resizer('variable')}
           </th>
           {shownFiles.map((f) => (
-            <th key={f.path} className={cn('relative truncate border-b border-[var(--node-border)] px-2 py-1 text-left font-medium', f.example && 'italic')} title={f.path}>
+            <th
+              key={f.path}
+              className={cn('relative truncate border-b border-[var(--node-border)] px-2 py-1 text-left font-medium', f.example && 'italic')}
+              title={f.path}
+            >
               {f.path}
               {resizer(f.path)}
             </th>
@@ -73,7 +83,11 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
                         className="text-[var(--ansi-1)] hover:underline"
                         title={`Not in ${f.path}: add it`}
                         onClick={async () => {
-                          const v = await host.ui.prompt({ title: `${key} in ${f.path}`, label: 'Its value', value: f.example ? '' : (values.find((x) => x !== undefined) ?? '') });
+                          const v = await host.ui.prompt({
+                            title: `${key} in ${f.path}`,
+                            label: 'Its value',
+                            value: f.example ? '' : (values.find((x) => x !== undefined) ?? ''),
+                          });
                           if (v !== null) void call({ op: 'set', file: f.path, version: f.version, key, value: v });
                         }}
                       >

@@ -59,7 +59,10 @@ export function EnvView() {
   const call: Call = (req) =>
     host.call(ID, { project: project.id, ...req }).then(
       () => true,
-      (e: Error) => (host.app.toast(e.message, { error: true }), false),
+      (e: Error) => {
+        host.app.toast(e.message, { error: true });
+        return false;
+      },
     );
   const files = state.files;
   const notHere = opened && !files.some((f) => f.path === opened) ? opened : null;
@@ -71,7 +74,9 @@ export function EnvView() {
     <div className="flex h-full flex-col text-xs text-[var(--node-fg)]">
       <div className="flex items-center gap-1 border-b border-[var(--node-border)] px-2 py-1">
         <div className="flex min-w-0 flex-1 items-center">
-          {compare ? <span className="flex h-6 items-center px-1 text-[var(--node-muted)]">Every variable in every file</span> : (
+          {compare ? (
+            <span className="flex h-6 items-center px-1 text-[var(--node-muted)]">Every variable in every file</span>
+          ) : (
             <Picker
               label="File"
               className={cn('font-mono', file?.example && 'italic')}
@@ -82,8 +87,19 @@ export function EnvView() {
             />
           )}
         </div>
-        <ToolButton label={revealAll ? 'Hide the values' : 'Show the values'} icon={revealAll ? EyeOff : Eye} active={revealAll} onClick={() => setRevealAll(!revealAll)} />
-        <ToolButton label={compare ? 'One file' : 'Compare the files'} icon={compare ? Rows3 : Table2} active={compare} onClick={() => setCompare(!compare)} disabled={files.length < 2 && !compare} />
+        <ToolButton
+          label={revealAll ? 'Hide the values' : 'Show the values'}
+          icon={revealAll ? EyeOff : Eye}
+          active={revealAll}
+          onClick={() => setRevealAll(!revealAll)}
+        />
+        <ToolButton
+          label={compare ? 'One file' : 'Compare the files'}
+          icon={compare ? Rows3 : Table2}
+          active={compare}
+          onClick={() => setCompare(!compare)}
+          disabled={files.length < 2 && !compare}
+        />
         <ToolButton label="New .env file" icon={FilePlus} onClick={() => void newFile(host, call, files)} />
       </div>
       {notHere && (
@@ -92,7 +108,11 @@ export function EnvView() {
         </div>
       )}
       <div className="min-h-0 flex-1 overflow-auto">
-        {compare ? <Compare files={files} reveal={revealAll} call={call} /> : file && <FileView key={file.path} file={file} files={files} revealAll={revealAll} call={call} />}
+        {compare ? (
+          <Compare files={files} reveal={revealAll} call={call} />
+        ) : (
+          file && <FileView key={file.path} file={file} files={files} revealAll={revealAll} call={call} />
+        )}
       </div>
     </div>
   );

@@ -11,7 +11,8 @@ export type Call = (req: Record<string, unknown>) => Promise<boolean>;
 /** Why a file needs a look: a secrets file git has, or doesn't ignore. */
 export function warning(f: EnvFile): string | null {
   if (f.example) return null;
-  if (f.tracked) return `${f.path} is committed to git: its secrets are in the repository’s history. Remove it from git (git rm --cached ${f.path}), add it to .gitignore, and change the secrets.`;
+  if (f.tracked)
+    return `${f.path} is committed to git: its secrets are in the repository’s history. Remove it from git (git rm --cached ${f.path}), add it to .gitignore, and change the secrets.`;
   if (f.ignored === false) return `${f.path} isn’t ignored by git: it could be committed. Add it to .gitignore.`;
   return null;
 }

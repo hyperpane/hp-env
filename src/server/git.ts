@@ -40,7 +40,16 @@ function gitLines(host: Host, root: string, args: string[], sep = '\0'): Promise
     // ls-files: 0; check-ignore: 0 (some ignored) or 1 (none); 128: no repository.
     child.on('close', (code) => {
       clearTimeout(timer);
-      resolve(code === 0 || code === 1 ? new Set(out.split(sep).map((l) => l.replace(/\r$/, '')).filter(Boolean)) : null);
+      resolve(
+        code === 0 || code === 1
+          ? new Set(
+              out
+                .split(sep)
+                .map((l) => l.replace(/\r$/, ''))
+                .filter(Boolean),
+            )
+          : null,
+      );
     });
   });
 }

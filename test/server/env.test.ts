@@ -47,7 +47,13 @@ test('finds the .env files, not those in node_modules, the project’s own first
     ['.env', '.env.example', 'docker/prod.env', 'apps/web/.env.local'],
   );
   assert.equal(s.files[1].example, true);
-  assert.deepEqual(s.files[1].entries.map((e) => [e.key, e.value]), [['A', ''], ['B', 'placeholder']]);
+  assert.deepEqual(
+    s.files[1].entries.map((e) => [e.key, e.value]),
+    [
+      ['A', ''],
+      ['B', 'placeholder'],
+    ],
+  );
 });
 
 test('git: a committed secrets file, and one git doesn’t ignore', { skip: !git }, async () => {

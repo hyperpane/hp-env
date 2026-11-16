@@ -101,7 +101,17 @@ export function parse(text: string): Parsed {
       }
       const raw = body.slice(0, close);
       const after = body.slice(close + 1);
-      entries.push({ key, value: q === '"' ? unescape(raw) : raw, start: i, end, line: i + 1, prefix, comment: /^\s*#/.test(after) ? after : '', disabled: false, hash: '' });
+      entries.push({
+        key,
+        value: q === '"' ? unescape(raw) : raw,
+        start: i,
+        end,
+        line: i + 1,
+        prefix,
+        comment: /^\s*#/.test(after) ? after : '',
+        disabled: false,
+        hash: '',
+      });
       i = end;
     } else {
       // Bare: up to a comment (` #`), trimmed.
@@ -109,7 +119,17 @@ export function parse(text: string): Parsed {
       const before = hash < 0 ? rest : rest.slice(0, hash);
       // The comment with the spaces before it, as they were.
       const comment = hash < 0 ? '' : rest.slice(before.trimEnd().length);
-      entries.push({ key, value: before.trim(), start: i, end: i, line: i + 1, prefix, comment: comment && !/^\s/.test(comment) ? ` ${comment}` : comment, disabled: false, hash: '' });
+      entries.push({
+        key,
+        value: before.trim(),
+        start: i,
+        end: i,
+        line: i + 1,
+        prefix,
+        comment: comment && !/^\s/.test(comment) ? ` ${comment}` : comment,
+        disabled: false,
+        hash: '',
+      });
     }
   }
   return { lines, eol, finalEol, entries, unreadable };

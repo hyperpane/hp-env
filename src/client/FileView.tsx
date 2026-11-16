@@ -41,7 +41,8 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
       else n.add(line);
       return n;
     });
-  const keyProblem = adding.key && !KEY_NAME.test(adding.key) ? 'Letters, digits and _, not starting with a digit' : keys.has(adding.key) ? 'It’s there already' : null;
+  const keyProblem =
+    adding.key && !KEY_NAME.test(adding.key) ? 'Letters, digits and _, not starting with a digit' : keys.has(adding.key) ? 'It’s there already' : null;
 
   return (
     <div className="flex flex-col">
@@ -51,10 +52,15 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           <span>{warn}</span>
         </div>
       )}
-      {file.example && <div className="border-b border-[var(--node-border)] px-2 py-1.5 text-[var(--node-muted)]">An example: the variables the project needs, with placeholder values. Its values are shown.</div>}
+      {file.example && (
+        <div className="border-b border-[var(--node-border)] px-2 py-1.5 text-[var(--node-muted)]">
+          An example: the variables the project needs, with placeholder values. Its values are shown.
+        </div>
+      )}
       {file.unreadable.length > 0 && (
         <div className="border-b border-[var(--node-border)] px-2 py-1.5 text-[var(--ansi-3)]">
-          {file.unreadable.length === 1 ? `Line ${file.unreadable[0]} isn’t` : `Lines ${file.unreadable.slice(0, 8).join(', ')} aren’t`} a variable: kept as they are.
+          {file.unreadable.length === 1 ? `Line ${file.unreadable[0]} isn’t` : `Lines ${file.unreadable.slice(0, 8).join(', ')} aren’t`} a variable: kept as
+          they are.
         </div>
       )}
 
@@ -64,15 +70,32 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
         </span>
         <label className="relative ml-auto">
           <Search className="pointer-events-none absolute top-1/2 left-1.5 size-3 -translate-y-1/2 text-[var(--node-muted)]" />
-          <NodeInput value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Filter by name" className="h-6 w-40 pl-6 font-mono" aria-label="Filter by name" />
+          <NodeInput
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Filter by name"
+            className="h-6 w-40 pl-6 font-mono"
+            aria-label="Filter by name"
+          />
         </label>
         {offCount > 0 && (
-          <Checkbox className="gap-1.5 text-xs text-[var(--node-muted)] hover:text-[var(--node-fg)]" label="Show off" checked={!hideOff} onCheckedChange={(v) => setHideOff(!v)} />
+          <Checkbox
+            className="gap-1.5 text-xs text-[var(--node-muted)] hover:text-[var(--node-fg)]"
+            label="Show off"
+            checked={!hideOff}
+            onCheckedChange={(v) => setHideOff(!v)}
+          />
         )}
       </div>
 
       {rows.length > 0 && (
-        <div className={cn(COLUMNS, styles.stickyTop, 'border-b border-[var(--node-border)] bg-[var(--node-bg)] pr-1 text-[10.5px] font-medium tracking-wide text-[var(--node-muted)] uppercase')}>
+        <div
+          className={cn(
+            COLUMNS,
+            styles.stickyTop,
+            'border-b border-[var(--node-border)] bg-[var(--node-bg)] pr-1 text-[10.5px] font-medium tracking-wide text-[var(--node-muted)] uppercase',
+          )}
+        >
           <span className="flex h-6 items-center justify-center" title="On: used. Off: commented out (# NAME=value).">
             ✓
           </span>
@@ -98,7 +121,15 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           onSave={(value) => call({ op: 'set', ...v, key: e.key, value, line: e.line })}
           onRename={(to) => call({ op: 'rename', ...v, key: e.key, to, line: e.line })}
           onRemove={async () => {
-            if (await host.ui.confirm({ title: `Remove ${e.key}?`, message: `Line ${e.line} of ${file.path}${e.disabled ? ' (it’s commented out)' : ''}`, confirm: 'Remove', destructive: true })) void call({ op: 'remove', ...v, key: e.key, line: e.line });
+            if (
+              await host.ui.confirm({
+                title: `Remove ${e.key}?`,
+                message: `Line ${e.line} of ${file.path}${e.disabled ? ' (it’s commented out)' : ''}`,
+                confirm: 'Remove',
+                destructive: true,
+              })
+            )
+              void call({ op: 'remove', ...v, key: e.key, line: e.line });
           }}
         />
       ))}
@@ -113,8 +144,21 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
         <span className="flex justify-center text-[var(--node-muted)]">
           <Plus className="size-3.5" />
         </span>
-        <NodeInput className={cn('mr-2 h-6 font-mono', keyProblem && 'border-[var(--ansi-1)]')} placeholder="NEW_VARIABLE" title={keyProblem ?? undefined} value={adding.key} onChange={(e) => setAdding({ ...adding, key: e.target.value.trim() })} aria-label="Name" />
-        <NodeInput className="h-6 min-w-0 font-mono" placeholder="value" value={adding.value} onChange={(e) => setAdding({ ...adding, value: e.target.value })} aria-label="Value" />
+        <NodeInput
+          className={cn('mr-2 h-6 font-mono', keyProblem && 'border-[var(--ansi-1)]')}
+          placeholder="NEW_VARIABLE"
+          title={keyProblem ?? undefined}
+          value={adding.key}
+          onChange={(e) => setAdding({ ...adding, key: e.target.value.trim() })}
+          aria-label="Name"
+        />
+        <NodeInput
+          className="h-6 min-w-0 font-mono"
+          placeholder="value"
+          value={adding.value}
+          onChange={(e) => setAdding({ ...adding, value: e.target.value })}
+          aria-label="Value"
+        />
         <span className="pl-1">
           <NodeButton type="submit" disabled={!adding.key || !!keyProblem}>
             Add
@@ -128,7 +172,12 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           </p>
           <div className="flex flex-wrap gap-1">
             {missing.map((e) => (
-              <NodeButton key={e.key} className="font-mono" title={`Add ${e.key} with the example’s value (${e.value || 'empty'})`} onClick={() => void call({ op: 'set', ...v, key: e.key, value: e.value })}>
+              <NodeButton
+                key={e.key}
+                className="font-mono"
+                title={`Add ${e.key} with the example’s value (${e.value || 'empty'})`}
+                onClick={() => void call({ op: 'set', ...v, key: e.key, value: e.value })}
+              >
                 <Plus />
                 {e.key}
               </NodeButton>

@@ -146,7 +146,8 @@ export class Env {
       throw new PluginError(`${file} isn’t there any more.`);
     }
     if (bytes.length > MAX_SIZE) throw new PluginError(`${file} is too big to change here.`);
-    if (typeof expected === 'string' && expected !== version(bytes)) throw new PluginError(`${file} changed on disk: here it is again, as it is now. Make the change again.`);
+    if (typeof expected === 'string' && expected !== version(bytes))
+      throw new PluginError(`${file} changed on disk: here it is again, as it is now. Make the change again.`);
     const next = change(bytes.toString('utf8'));
     const mode = (await stat(full)).mode & 0o777;
     await writeFile(`${full}.hyperpane-tmp`, next, { mode });
@@ -161,7 +162,8 @@ export class Env {
     if (typeof value !== 'string') throw new PluginError('A value is text.');
     if (value.length > 65_536) throw new PluginError('That value is too long (64 KB at most).');
     return this.#change(project, file, expected, (text) => {
-      if (at !== undefined && !parse(text).entries.some((e) => e.key === k && e.line === at)) throw new PluginError(`${k} isn’t on line ${at} of ${file} any more.`);
+      if (at !== undefined && !parse(text).entries.some((e) => e.key === k && e.line === at))
+        throw new PluginError(`${k} isn’t on line ${at} of ${file} any more.`);
       return set(text, k, value, at);
     });
   }
@@ -218,7 +220,8 @@ export class Env {
   }
 
   #key(key: unknown): string {
-    if (typeof key !== 'string' || !KEY_NAME.test(key)) throw new PluginError(`“${String(key)}” isn’t a variable’s name: letters, digits and _ (and . or -), not starting with a digit.`);
+    if (typeof key !== 'string' || !KEY_NAME.test(key))
+      throw new PluginError(`“${String(key)}” isn’t a variable’s name: letters, digits and _ (and . or -), not starting with a digit.`);
     return key;
   }
 }

@@ -61,14 +61,29 @@ test('Windows line endings stay', () => {
 });
 
 test('values are written so they read back the same', () => {
-  for (const value of ['plain', '', 'has space', 'a#b', 'it\'s', 'say "hi"', 'two\nlines', 'back\\slash', '=equals=', ' padded ', 'tab\there', "both ' and \""]) {
+  for (const value of [
+    'plain',
+    '',
+    'has space',
+    'a#b',
+    "it's",
+    'say "hi"',
+    'two\nlines',
+    'back\\slash',
+    '=equals=',
+    ' padded ',
+    'tab\there',
+    'both \' and "',
+  ]) {
     const back = parse(`K=${encode(value)}\n`).entries[0].value;
     assert.equal(back, value, `${JSON.stringify(value)} written as ${encode(value)}`);
   }
 });
 
 test('a commented variable is a disabled one; a plain comment isn’t', () => {
-  const p = parse('# Database\n# DATABASE_URL=postgres://prod\nDATABASE_URL=postgres://local\n#export TOKEN="a b" # old\n#   DEBUG=1\n# Set this = later\n## Notes\n');
+  const p = parse(
+    '# Database\n# DATABASE_URL=postgres://prod\nDATABASE_URL=postgres://local\n#export TOKEN="a b" # old\n#   DEBUG=1\n# Set this = later\n## Notes\n',
+  );
   assert.deepEqual(
     p.entries.map((e) => [e.key, e.value, e.line, e.disabled]),
     [

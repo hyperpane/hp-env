@@ -33,7 +33,14 @@ export function Row(props: {
     setEditing(what);
   };
   const save = async () => {
-    const ok = editing === 'value' ? (draft === props.value ? true : await props.onSave(draft)) : draft === props.name ? true : KEY_NAME.test(draft) && (await props.onRename(draft));
+    const ok =
+      editing === 'value'
+        ? draft === props.value
+          ? true
+          : await props.onSave(draft)
+        : draft === props.name
+          ? true
+          : KEY_NAME.test(draft) && (await props.onRename(draft));
     if (ok) setEditing(null);
   };
   const keys = (e: React.KeyboardEvent) => {
@@ -45,21 +52,51 @@ export function Row(props: {
   const multiline = props.value.includes('\n');
   const off = props.disabled;
   return (
-    <div className={cn(COLUMNS, 'group min-h-8 border-b border-[color-mix(in_srgb,var(--node-border)_70%,transparent)] pr-1 hover:bg-[var(--node-hover)]', editing && 'bg-[var(--node-hover)]')}>
+    <div
+      className={cn(
+        COLUMNS,
+        'group min-h-8 border-b border-[color-mix(in_srgb,var(--node-border)_70%,transparent)] pr-1 hover:bg-[var(--node-hover)]',
+        editing && 'bg-[var(--node-hover)]',
+      )}
+    >
       <label className="flex h-8 cursor-pointer items-center justify-center">
-        <Checkbox checked={!off} onCheckedChange={props.onEnable} label={off ? `Off: commented out on line ${props.line}. Tick to use it.` : `On (line ${props.line}). Untick to comment it out.`} hideLabel />
+        <Checkbox
+          checked={!off}
+          onCheckedChange={props.onEnable}
+          label={off ? `Off: commented out on line ${props.line}. Tick to use it.` : `On (line ${props.line}). Untick to comment it out.`}
+          hideLabel
+        />
       </label>
       {editing === 'name' ? (
-        <NodeInput autoFocus className="mr-2 h-6 font-mono" value={draft} onChange={(e) => setDraft(e.target.value.trim())} onKeyDown={keys} onBlur={() => setEditing(null)} />
+        <NodeInput
+          autoFocus
+          className="mr-2 h-6 font-mono"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value.trim())}
+          onKeyDown={keys}
+          onBlur={() => setEditing(null)}
+        />
       ) : (
-        <button type="button" className={cn('flex min-w-0 items-center gap-1.5 pr-2 text-left font-mono', off && 'text-[var(--node-muted)]')} title={`${props.name} (line ${props.line}). Double-click to rename.`} onDoubleClick={() => start('name')}>
+        <button
+          type="button"
+          className={cn('flex min-w-0 items-center gap-1.5 pr-2 text-left font-mono', off && 'text-[var(--node-muted)]')}
+          title={`${props.name} (line ${props.line}). Double-click to rename.`}
+          onDoubleClick={() => start('name')}
+        >
           <span className={cn('truncate', off && 'line-through decoration-[color-mix(in_srgb,var(--node-muted)_60%,transparent)]')}>{props.name}</span>
           {props.twice && !off && (
-            <span className="flex-none rounded-[3px] bg-[color-mix(in_srgb,var(--ansi-3)_18%,transparent)] px-1 text-[10px] text-[var(--ansi-3)]" title="It’s on more than once: this one counts (the last)">
+            <span
+              className="flex-none rounded-[3px] bg-[color-mix(in_srgb,var(--ansi-3)_18%,transparent)] px-1 text-[10px] text-[var(--ansi-3)]"
+              title="It’s on more than once: this one counts (the last)"
+            >
               ×2
             </span>
           )}
-          {off && <span className="flex-none rounded-[3px] border border-[var(--node-border)] px-1 text-[9.5px] tracking-wide text-[var(--node-muted)] uppercase no-underline">off</span>}
+          {off && (
+            <span className="flex-none rounded-[3px] border border-[var(--node-border)] px-1 text-[9.5px] tracking-wide text-[var(--node-muted)] uppercase no-underline">
+              off
+            </span>
+          )}
         </button>
       )}
       {editing === 'value' ? (
@@ -79,7 +116,17 @@ export function Row(props: {
           onDoubleClick={() => start('value')}
           title="Double-click to change it"
         >
-          {props.value === '' ? <span className="italic opacity-70">empty</span> : props.reveal ? (multiline ? props.value.replace(/\n/g, '⏎') : props.value) : <span className="tracking-widest">{MASK}</span>}
+          {props.value === '' ? (
+            <span className="italic opacity-70">empty</span>
+          ) : props.reveal ? (
+            multiline ? (
+              props.value.replace(/\n/g, '⏎')
+            ) : (
+              props.value
+            )
+          ) : (
+            <span className="tracking-widest">{MASK}</span>
+          )}
         </button>
       )}
       {editing ? (

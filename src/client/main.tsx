@@ -5,4 +5,6 @@ import { mount } from '@hyperpane/sdk/client';
 import { NodeMessage } from '@hyperpane/ui';
 import { EnvView } from './EnvView.tsx';
 
-mount((host) => (host.view.type === 'node' && host.view.kind === 'env' ? <EnvView /> : <NodeMessage error>Env has no “{host.view.type}” view here.</NodeMessage>));
+mount((host) =>
+  host.view.type === 'node' && host.view.kind === 'env' ? <EnvView /> : <NodeMessage error>Env has no “{host.view.type}” view here.</NodeMessage>,
+);
