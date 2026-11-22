@@ -65,7 +65,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
           const differ = new Set(values.filter((x) => x !== undefined)).size > 1;
           return (
             <tr key={key} className="hover:bg-[var(--node-hover)]">
-              <td className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono" title={key}>
+              <td className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono touch:py-2.5" title={key}>
                 {key}
                 {differ && (
                   <span className="ml-1 text-[var(--node-muted)]" title="Not the same in every file">
@@ -76,7 +76,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
               {shownFiles.map((f, i) => {
                 const val = values[i];
                 return (
-                  <td key={f.path} className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono">
+                  <td key={f.path} className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono touch:py-2.5">
                     {val === undefined ? (
                       <button
                         type="button"

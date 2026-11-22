@@ -10,7 +10,7 @@ import { useHost } from '@hyperpane/sdk/client';
 import { Checkbox, NodeButton, NodeInput, NodeMessage, cn, styles } from '@hyperpane/ui';
 import { type EnvFile, KEY_NAME } from '../shared/index.ts';
 import { type Call, warning } from './lib.ts';
-import { COLUMNS, Row } from './Row.tsx';
+import { COLUMNS, Row, UNDER } from './Row.tsx';
 
 export function FileView({ file, files, revealAll, call }: { file: EnvFile; files: EnvFile[]; revealAll: boolean; call: Call }) {
   const host = useHost();
@@ -99,9 +99,11 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           <span className="flex h-6 items-center justify-center" title="On: used. Off: commented out (# NAME=value).">
             ✓
           </span>
-          <span>Name</span>
-          <span>Value</span>
-          <span />
+          <span>
+            Name<span className="sm:hidden"> and value</span>
+          </span>
+          <span className="max-sm:hidden">Value</span>
+          <span className="max-sm:hidden" />
         </div>
       )}
       {rows.length === 0 && <p className="px-2 py-3 text-[var(--node-muted)]">Nothing in it yet</p>}
@@ -153,7 +155,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           aria-label="Name"
         />
         <NodeInput
-          className="h-6 min-w-0 font-mono"
+          className={cn(UNDER, 'h-6 min-w-0 font-mono')}
           placeholder="value"
           value={adding.value}
           onChange={(e) => setAdding({ ...adding, value: e.target.value })}

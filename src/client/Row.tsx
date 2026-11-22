@@ -1,7 +1,8 @@
 // One variable in a file, as a row of the file's table: a checkbox (on, or
 // commented out), its name (double-click to rename), its value hidden until
 // revealed (double-click to change it; Enter saves, Shift+Enter is a new
-// line, Escape cancels), and show, copy, change and remove on hover.
+// line, Escape cancels), and show, copy, change and remove on hover (always,
+// with a finger). A narrow window puts the value under the name.
 
 import { useState } from 'react';
 import { Check, Copy, Eye, EyeOff, Pencil, Trash2, X } from 'lucide-react';
@@ -9,8 +10,11 @@ import { Checkbox, NodeInput, ToolButton, cn } from '@hyperpane/ui';
 import { KEY_NAME } from '../shared/index.ts';
 import { MASK } from './lib.ts';
 
-/** The table's columns, shared by its header, rows and the add row. */
-export const COLUMNS = 'grid grid-cols-[28px_minmax(120px,34%)_minmax(0,1fr)_auto] items-center';
+/** The table's columns, shared by its header, rows and the add row. Narrow:
+ * the name and the actions on a line, the value (`UNDER`) on the next. */
+export const COLUMNS = 'grid grid-cols-[28px_minmax(120px,34%)_minmax(0,1fr)_auto] items-center max-sm:grid-cols-[28px_minmax(0,1fr)_auto]';
+/** The value's place in a narrow window: under the name, to the end. */
+export const UNDER = 'max-sm:col-[2/4] max-sm:row-start-2';
 
 export function Row(props: {
   name: string;
@@ -55,11 +59,11 @@ export function Row(props: {
     <div
       className={cn(
         COLUMNS,
-        'group min-h-8 border-b border-[color-mix(in_srgb,var(--node-border)_70%,transparent)] pr-1 hover:bg-[var(--node-hover)]',
+        'group min-h-8 border-b border-[color-mix(in_srgb,var(--node-border)_70%,transparent)] pr-1 hover:bg-[var(--node-hover)] touch:min-h-10 max-sm:pb-1.5',
         editing && 'bg-[var(--node-hover)]',
       )}
     >
-      <label className="flex h-8 cursor-pointer items-center justify-center">
+      <label className="flex h-8 cursor-pointer items-center justify-center touch:h-10">
         <Checkbox
           checked={!off}
           onCheckedChange={props.onEnable}
@@ -103,7 +107,10 @@ export function Row(props: {
         <textarea
           autoFocus
           rows={Math.min(6, draft.split('\n').length)}
-          className="rounded-control my-1 min-w-0 resize-none border border-[var(--node-accent)] bg-[var(--node-bg)] px-1.5 py-0.5 font-mono text-xs outline-none"
+          className={cn(
+            UNDER,
+            'rounded-control my-1 min-w-0 resize-none border border-[var(--node-accent)] bg-[var(--node-bg)] px-1.5 py-0.5 font-mono text-xs outline-none',
+          )}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={keys}
@@ -112,7 +119,7 @@ export function Row(props: {
       ) : (
         <button
           type="button"
-          className={cn('min-w-0 truncate text-left font-mono', (!props.reveal || off) && 'text-[var(--node-muted)]', off && 'opacity-70')}
+          className={cn(UNDER, 'min-w-0 truncate text-left font-mono', (!props.reveal || off) && 'text-[var(--node-muted)]', off && 'opacity-70')}
           onDoubleClick={() => start('value')}
           title="Double-click to change it"
         >
@@ -135,7 +142,7 @@ export function Row(props: {
           <ToolButton label="Cancel (Escape)" icon={X} onClick={() => setEditing(null)} />
         </div>
       ) : (
-        <div className="flex flex-none pl-1 opacity-0 group-hover:opacity-100 has-[:focus-visible]:opacity-100">
+        <div className="flex flex-none pl-1 opacity-0 group-hover:opacity-100 has-[:focus-visible]:opacity-100 touch:opacity-100">
           <ToolButton label={props.reveal ? 'Hide' : 'Show'} icon={props.reveal ? EyeOff : Eye} onClick={props.onToggle} />
           <ToolButton label="Copy the value" icon={Copy} onClick={props.onCopy} />
           <ToolButton label="Change the value" icon={Pencil} onClick={() => start('value')} />
