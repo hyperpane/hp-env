@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { Check, Copy, Eye, EyeOff, Pencil, Trash2, X } from 'lucide-react';
-import { Checkbox, NodeInput, ToolButton, cn } from '@hyperpane/ui';
+import { Badge, Checkbox, NodeInput, ToolButton, cn } from '@hyperpane/ui';
 import { KEY_NAME } from '../shared/index.ts';
 import { MASK } from './lib.ts';
 
@@ -59,11 +59,11 @@ export function Row(props: {
     <div
       className={cn(
         COLUMNS,
-        'group min-h-8 border-b border-[color-mix(in_srgb,var(--node-border)_70%,transparent)] pr-1 hover:bg-[var(--node-hover)] touch:min-h-10 max-sm:pb-1.5',
+        'group rounded-control mx-1 min-h-7 pr-1 transition-colors duration-75 hover:bg-[var(--node-hover)] touch:min-h-10 max-sm:pb-1.5',
         editing && 'bg-[var(--node-hover)]',
       )}
     >
-      <label className="flex h-8 cursor-pointer items-center justify-center touch:h-10">
+      <label className="flex h-7 cursor-pointer items-center justify-center touch:h-10">
         <Checkbox
           checked={!off}
           onCheckedChange={props.onEnable}
@@ -74,7 +74,7 @@ export function Row(props: {
       {editing === 'name' ? (
         <NodeInput
           autoFocus
-          className="mr-2 h-6 font-mono"
+          className="mr-2 font-mono"
           value={draft}
           onChange={(e) => setDraft(e.target.value.trim())}
           onKeyDown={keys}
@@ -89,17 +89,14 @@ export function Row(props: {
         >
           <span className={cn('truncate', off && 'line-through decoration-[color-mix(in_srgb,var(--node-muted)_60%,transparent)]')}>{props.name}</span>
           {props.twice && !off && (
-            <span
-              className="flex-none rounded-[3px] bg-[color-mix(in_srgb,var(--ansi-3)_18%,transparent)] px-1 text-[10px] text-[var(--ansi-3)]"
-              title="It’s on more than once: this one counts (the last)"
-            >
+            <Badge size="sm" shape="rounded" color="amber" className="tabular-nums" title="It’s on more than once: this one counts (the last)">
               ×2
-            </span>
+            </Badge>
           )}
           {off && (
-            <span className="flex-none rounded-[3px] border border-[var(--node-border)] px-1 text-[9.5px] tracking-wide text-[var(--node-muted)] uppercase no-underline">
-              off
-            </span>
+            <Badge size="sm" shape="rounded" className="text-[var(--node-muted)]">
+              Off
+            </Badge>
           )}
         </button>
       )}
@@ -109,7 +106,7 @@ export function Row(props: {
           rows={Math.min(6, draft.split('\n').length)}
           className={cn(
             UNDER,
-            'rounded-control my-1 min-w-0 resize-none border border-[var(--node-accent)] bg-[var(--node-bg)] px-1.5 py-0.5 font-mono text-xs outline-none',
+            'rounded-control my-1 min-w-0 resize-none border border-[var(--node-accent)] bg-transparent px-2 py-1 font-mono text-xs shadow-[0_0_0_2px_color-mix(in_srgb,var(--node-accent)_22%,transparent)] outline-none',
           )}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}

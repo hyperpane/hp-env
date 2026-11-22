@@ -9,9 +9,9 @@
 // a Row.tsx), Compare is Compare.tsx.
 
 import { useEffect, useState } from 'react';
-import { Eye, EyeOff, FileKey, FilePlus, Rows3, Table2, TriangleAlert } from 'lucide-react';
+import { CircleAlert, Eye, EyeOff, FileKey, FilePlus, FolderOpen, Rows3, Server, Table2, TriangleAlert } from 'lucide-react';
 import { useData, useHost, useProject } from '@hyperpane/sdk/client';
-import { NodeButton, NodeMessage, Picker, ToolButton, cn } from '@hyperpane/ui';
+import { Empty, NodeButton, Picker, Spinner, Toolbar, ToolButton, cn } from '@hyperpane/ui';
 import type { EnvFile, EnvState } from '../shared/index.ts';
 import { Compare } from './Compare.tsx';
 import { FileView } from './FileView.tsx';
@@ -51,10 +51,27 @@ export function EnvView() {
     return host.subscribe<EnvState>(ID, { op: 'watch', project: project.id }, setState, { onEnd: (e) => e && setError(e) });
   }, [project?.id, host]);
 
-  if (!project) return <NodeMessage>Open a project to see its .env files</NodeMessage>;
-  if (error) return <NodeMessage error>{error}</NodeMessage>;
-  if (!state) return <NodeMessage>Looking for .env files</NodeMessage>;
-  if (state.elsewhere) return <NodeMessage>This project’s folder is on another server</NodeMessage>;
+  if (!project)
+    return <Empty bordered={false} className="h-full" icon={<FolderOpen />} title="No project" description="Open a project to see its .env files." />;
+  if (error)
+    return (
+      <Empty
+        bordered={false}
+        className="h-full"
+        icon={<CircleAlert className="text-[var(--ansi-1)]" />}
+        title="Couldn’t read the .env files"
+        description={error}
+      />
+    );
+  if (!state)
+    return (
+      <div className="flex h-full items-center justify-center gap-2 text-xs text-[var(--node-muted)]">
+        <Spinner size="xs" />
+        Looking for .env files
+      </div>
+    );
+  if (state.elsewhere)
+    return <Empty bordered={false} className="h-full" icon={<Server />} title="On another server" description="This project’s folder is on another server." />;
 
   const call: Call = (req) =>
     host.call(ID, { project: project.id, ...req }).then(
@@ -72,13 +89,18 @@ export function EnvView() {
 
   return (
     <div className="flex h-full flex-col text-xs text-[var(--node-fg)]">
-      <div className="flex items-center gap-1 border-b border-[var(--node-border)] px-2 py-1">
+      <Toolbar>
         <div className="flex min-w-0 flex-1 items-center">
           {compare ? (
-            <span className="flex h-6 items-center px-1 text-[var(--node-muted)]">Every variable in every file</span>
+            <span className="flex h-7 items-center gap-2 px-2 font-medium">
+              <Table2 className="size-3.5 text-[var(--node-muted)]" />
+              Every variable in every file
+            </span>
           ) : (
             <Picker
               label="File"
+              size="sm"
+              ghost
               className={cn('font-mono', file?.example && 'italic')}
               icon={file && warning(file) ? <TriangleAlert className="text-[var(--ansi-3)]" /> : <FileKey className="text-[var(--node-muted)]" />}
               value={file?.path ?? null}
@@ -101,10 +123,14 @@ export function EnvView() {
           disabled={files.length < 2 && !compare}
         />
         <ToolButton label="New .env file" icon={FilePlus} onClick={() => void newFile(host, call, files)} />
-      </div>
+      </Toolbar>
       {notHere && (
-        <div className="border-b border-[var(--node-border)] bg-[color-mix(in_srgb,var(--ansi-3)_12%,transparent)] px-3 py-1.5 text-[var(--node-fg)]">
-          {notHere} isn’t one of this project’s .env files: it’s outside the project’s folder, or more than three folders down, or not named as one.
+        <div className="flex flex-none items-start gap-2 border-b border-[var(--node-border)] bg-[color-mix(in_srgb,var(--ansi-3)_8%,var(--node-bg))] px-3 py-2">
+          <TriangleAlert className="mt-0.5 size-3.5 flex-none text-[var(--ansi-3)]" />
+          <span>
+            <span className="font-mono">{notHere}</span> isn’t one of this project’s .env files: it’s outside the project’s folder, or more than three folders
+            down, or not named as one.
+          </span>
         </div>
       )}
       <div className="min-h-0 flex-1 overflow-auto">
@@ -120,13 +146,19 @@ export function EnvView() {
 
 function NoFiles({ call }: { call: Call }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center text-xs text-[var(--node-muted)]">
-      <p>No .env files in this project</p>
-      <NodeButton onClick={() => void call({ op: 'create', file: '.env' })}>
-        <FilePlus />
-        Create .env
-      </NodeButton>
-    </div>
+    <Empty
+      bordered={false}
+      className="h-full"
+      icon={<FileKey />}
+      title="No .env files"
+      description="This project has no .env file yet."
+      action={
+        <NodeButton variant="primary" onClick={() => void call({ op: 'create', file: '.env' })}>
+          <FilePlus />
+          Create .env
+        </NodeButton>
+      }
+    />
   );
 }
 

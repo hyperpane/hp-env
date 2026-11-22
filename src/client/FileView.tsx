@@ -5,9 +5,9 @@
 // and what its example has that it hasn't, a click to add each.
 
 import { useState } from 'react';
-import { Plus, Search, TriangleAlert } from 'lucide-react';
+import { FileWarning, Info, Plus, Search, TriangleAlert } from 'lucide-react';
 import { useHost } from '@hyperpane/sdk/client';
-import { Checkbox, NodeButton, NodeInput, NodeMessage, cn, styles } from '@hyperpane/ui';
+import { Checkbox, Empty, NodeButton, NodeInput, cn, styles } from '@hyperpane/ui';
 import { type EnvFile, KEY_NAME } from '../shared/index.ts';
 import { type Call, warning } from './lib.ts';
 import { COLUMNS, Row, UNDER } from './Row.tsx';
@@ -32,7 +32,16 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
   const warn = warning(file);
   const v = { file: file.path, version: file.version };
 
-  if (file.tooBig) return <NodeMessage>{file.path} is over 1 MB: open it in the Editor.</NodeMessage>;
+  if (file.tooBig)
+    return (
+      <Empty
+        bordered={false}
+        className="h-full"
+        icon={<FileWarning />}
+        title="Too big to show"
+        description={`${file.path} is over 1 MB: open it in the Editor.`}
+      />
+    );
 
   const toggle = (line: number) =>
     setShown((s) => {
@@ -46,35 +55,44 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
 
   return (
     <div className="flex flex-col">
-      {warn && (
-        <div className="flex items-start gap-1.5 border-b border-[var(--node-border)] bg-[color-mix(in_srgb,var(--ansi-3)_12%,transparent)] px-2 py-1.5">
-          <TriangleAlert className="mt-px size-3.5 flex-none text-[var(--ansi-3)]" />
-          <span>{warn}</span>
-        </div>
-      )}
-      {file.example && (
-        <div className="border-b border-[var(--node-border)] px-2 py-1.5 text-[var(--node-muted)]">
-          An example: the variables the project needs, with placeholder values. Its values are shown.
-        </div>
-      )}
-      {file.unreadable.length > 0 && (
-        <div className="border-b border-[var(--node-border)] px-2 py-1.5 text-[var(--ansi-3)]">
-          {file.unreadable.length === 1 ? `Line ${file.unreadable[0]} isn’t` : `Lines ${file.unreadable.slice(0, 8).join(', ')} aren’t`} a variable: kept as
-          they are.
+      {/* What needs saying about the file, one notice to a line, above the table. */}
+      {(warn || file.example || file.unreadable.length > 0) && (
+        <div className="flex flex-col gap-2 px-3 pt-3">
+          {warn && (
+            <div className="rounded-control flex items-start gap-2 bg-[color-mix(in_srgb,var(--ansi-3)_10%,transparent)] px-2.5 py-2">
+              <TriangleAlert className="mt-0.5 size-3.5 flex-none text-[var(--ansi-3)]" />
+              <span>{warn}</span>
+            </div>
+          )}
+          {file.example && (
+            <p className="flex items-start gap-2 px-0.5 text-[var(--node-muted)]">
+              <Info className="mt-0.5 size-3.5 flex-none" />
+              An example: the variables the project needs, with placeholder values. Its values are shown.
+            </p>
+          )}
+          {file.unreadable.length > 0 && (
+            <p className="flex items-start gap-2 px-0.5 text-[var(--ansi-3)]">
+              <TriangleAlert className="mt-0.5 size-3.5 flex-none" />
+              <span>
+                {file.unreadable.length === 1 ? `Line ${file.unreadable[0]} isn’t` : `Lines ${file.unreadable.slice(0, 8).join(', ')} aren’t`} a variable: kept
+                as they are.
+              </span>
+            </p>
+          )}
         </div>
       )}
 
-      <div className="flex items-center gap-2 border-b border-[var(--node-border)] px-2 py-1.5">
+      <div className="flex h-11 flex-none items-center gap-3 px-3 touch:h-13">
         <span className="text-[var(--node-muted)] tabular-nums">
-          <span className="text-[var(--node-fg)]">{on.length}</span> on{offCount > 0 && <> · {offCount} off</>}
+          <span className="font-medium text-[var(--node-fg)]">{on.length}</span> on{offCount > 0 && <> · {offCount} off</>}
         </span>
         <label className="relative ml-auto">
-          <Search className="pointer-events-none absolute top-1/2 left-1.5 size-3 -translate-y-1/2 text-[var(--node-muted)]" />
+          <Search className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-[var(--node-muted)]" />
           <NodeInput
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter by name"
-            className="h-6 w-40 pl-6 font-mono"
+            className="w-44 pl-7"
             aria-label="Filter by name"
           />
         </label>
@@ -89,25 +107,21 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
       </div>
 
       {rows.length > 0 && (
-        <div
-          className={cn(
-            COLUMNS,
-            styles.stickyTop,
-            'border-b border-[var(--node-border)] bg-[var(--node-bg)] pr-1 text-[10.5px] font-medium tracking-wide text-[var(--node-muted)] uppercase',
-          )}
-        >
-          <span className="flex h-6 items-center justify-center" title="On: used. Off: commented out (# NAME=value).">
-            ✓
-          </span>
-          <span>
-            Name<span className="sm:hidden"> and value</span>
-          </span>
-          <span className="max-sm:hidden">Value</span>
-          <span className="max-sm:hidden" />
+        <div className={cn(styles.stickyTop, 'mb-1 border-b border-[var(--node-border)] bg-[var(--node-bg)] px-1')}>
+          <div className={cn(COLUMNS, 'pr-1 text-xs font-medium text-[var(--node-muted)]')}>
+            <span className="flex h-7 items-center justify-center" title="On: used. Off: commented out (# NAME=value).">
+              On
+            </span>
+            <span>
+              Name<span className="sm:hidden"> and value</span>
+            </span>
+            <span className="max-sm:hidden">Value</span>
+            <span className="max-sm:hidden" />
+          </div>
         </div>
       )}
-      {rows.length === 0 && <p className="px-2 py-3 text-[var(--node-muted)]">Nothing in it yet</p>}
-      {rows.length > 0 && visible.length === 0 && <p className="px-2 py-3 text-[var(--node-muted)]">No variable matches “{filter}”.</p>}
+      {rows.length === 0 && <p className="px-3 py-3 text-[var(--node-muted)]">Nothing in it yet</p>}
+      {rows.length > 0 && visible.length === 0 && <p className="px-3 py-3 text-[var(--node-muted)]">No variable matches “{filter}”.</p>}
       {visible.map((e) => (
         <Row
           key={e.line}
@@ -136,7 +150,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
         />
       ))}
       <form
-        className={cn(COLUMNS, 'gap-y-1 py-1.5 pr-1')}
+        className={cn(COLUMNS, 'mx-1 gap-y-1 py-2 pr-1')}
         onSubmit={async (ev) => {
           ev.preventDefault();
           if (!adding.key || keyProblem) return;
@@ -147,7 +161,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           <Plus className="size-3.5" />
         </span>
         <NodeInput
-          className={cn('mr-2 h-6 font-mono', keyProblem && 'border-[var(--ansi-1)]')}
+          className={cn('mr-2 font-mono', keyProblem && 'border-[var(--ansi-1)]')}
           placeholder="NEW_VARIABLE"
           title={keyProblem ?? undefined}
           value={adding.key}
@@ -155,7 +169,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           aria-label="Name"
         />
         <NodeInput
-          className={cn(UNDER, 'h-6 min-w-0 font-mono')}
+          className={cn(UNDER, 'min-w-0 font-mono')}
           placeholder="value"
           value={adding.value}
           onChange={(e) => setAdding({ ...adding, value: e.target.value })}
@@ -168,11 +182,12 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
         </span>
       </form>
       {missing.length > 0 && example && (
-        <div className="border-t border-[var(--node-border)] px-2 py-2">
-          <p className="mb-1.5 text-[var(--node-muted)]">
-            In {example.path}, not here ({missing.length}):
+        <div className="mt-1 border-t border-[var(--node-border)] px-3 pt-1 pb-3">
+          <p className="flex h-7 items-center gap-1.5 font-medium text-[var(--node-muted)]">
+            In <span className="font-mono">{example.path}</span>, not here
+            <span className="tabular-nums">{missing.length}</span>
           </p>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {missing.map((e) => (
               <NodeButton
                 key={e.key}

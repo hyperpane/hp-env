@@ -42,14 +42,17 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
       </colgroup>
       <thead className={cn(styles.stickyTableHead, 'bg-[var(--node-bg)]')}>
         <tr>
-          <th className="relative truncate border-b border-[var(--node-border)] px-2 py-1 text-left font-medium">
+          <th className="relative h-7 truncate border-b border-[var(--node-border)] px-3 text-left font-medium text-[var(--node-muted)]">
             Variable
             {resizer('variable')}
           </th>
           {shownFiles.map((f) => (
             <th
               key={f.path}
-              className={cn('relative truncate border-b border-[var(--node-border)] px-2 py-1 text-left font-medium', f.example && 'italic')}
+              className={cn(
+                'relative h-7 truncate border-b border-[var(--node-border)] px-3 text-left font-mono font-medium text-[var(--node-muted)]',
+                f.example && 'italic',
+              )}
               title={f.path}
             >
               {f.path}
@@ -64,11 +67,11 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
           const values = shownFiles.map((f) => value(f, key));
           const differ = new Set(values.filter((x) => x !== undefined)).size > 1;
           return (
-            <tr key={key} className="hover:bg-[var(--node-hover)]">
-              <td className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono touch:py-2.5" title={key}>
+            <tr key={key} className="transition-colors duration-75 hover:bg-[var(--node-hover)]">
+              <td className="h-7 truncate px-3 font-mono touch:h-10" title={key}>
                 {key}
                 {differ && (
-                  <span className="ml-1 text-[var(--node-muted)]" title="Not the same in every file">
+                  <span className="ml-1.5 text-[var(--ansi-3)]" title="Not the same in every file">
                     ≠
                   </span>
                 )}
@@ -76,11 +79,11 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
               {shownFiles.map((f, i) => {
                 const val = values[i];
                 return (
-                  <td key={f.path} className="truncate border-b border-[var(--node-border)] px-2 py-1 font-mono touch:py-2.5">
+                  <td key={f.path} className="h-7 truncate px-3 font-mono touch:h-10">
                     {val === undefined ? (
                       <button
                         type="button"
-                        className="text-[var(--ansi-1)] hover:underline"
+                        className="rounded-chip font-sans text-[var(--ansi-1)] hover:underline"
                         title={`Not in ${f.path}: add it`}
                         onClick={async () => {
                           const v = await host.ui.prompt({
@@ -103,7 +106,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
                   </td>
                 );
               })}
-              <td className="border-b border-[var(--node-border)]" />
+              <td />
             </tr>
           );
         })}
