@@ -5,14 +5,14 @@
 // with a finger). A narrow window puts the value under the name.
 
 import { useState } from 'react';
-import { Check, Copy, Eye, EyeOff, Pencil, Trash2, X } from 'lucide-react';
-import { Badge, Checkbox, NodeInput, ToolButton, cn } from '@hyperpane/ui';
+import { Check, Copy, Eye, EyeOff, Pencil, Trash2, X } from '@hyperpane/icons';
+import { Checkbox, Chip, Input, ToolButton, cn } from '@hyperpane/ui';
 import { KEY_NAME } from '../shared/index.ts';
 import { MASK } from './lib.ts';
 
 /** The table's columns, shared by its header, rows and the add row. Narrow:
  * the name and the actions on a line, the value (`UNDER`) on the next. */
-export const COLUMNS = 'grid grid-cols-[28px_minmax(120px,34%)_minmax(0,1fr)_auto] items-center max-sm:grid-cols-[28px_minmax(0,1fr)_auto]';
+export const COLUMNS = 'grid grid-cols-[32px_minmax(120px,34%)_minmax(0,1fr)_auto] items-center px-1 max-sm:grid-cols-[32px_minmax(0,1fr)_auto]';
 /** The value's place in a narrow window: under the name, to the end. */
 export const UNDER = 'max-sm:col-[2/4] max-sm:row-start-2';
 
@@ -59,11 +59,11 @@ export function Row(props: {
     <div
       className={cn(
         COLUMNS,
-        'group rounded-control mx-1 min-h-7 pr-1 transition-colors duration-75 hover:bg-[var(--node-hover)] touch:min-h-10 max-sm:pb-1.5',
+        'group rounded-control min-h-8 transition-colors duration-100 hover:bg-[var(--node-hover)] touch:min-h-11 max-sm:pb-1.5',
         editing && 'bg-[var(--node-hover)]',
       )}
     >
-      <label className="flex h-7 cursor-pointer items-center justify-center touch:h-10">
+      <label className="flex h-8 cursor-pointer items-center justify-center touch:h-11">
         <Checkbox
           checked={!off}
           onCheckedChange={props.onEnable}
@@ -72,31 +72,31 @@ export function Row(props: {
         />
       </label>
       {editing === 'name' ? (
-        <NodeInput
+        <Input
           autoFocus
-          className="mr-2 font-mono"
+          size="sm"
+          containerClassName="mr-2"
+          className="font-mono text-xs"
           value={draft}
-          onChange={(e) => setDraft(e.target.value.trim())}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value.trim())}
           onKeyDown={keys}
           onBlur={() => setEditing(null)}
         />
       ) : (
         <button
           type="button"
-          className={cn('flex min-w-0 items-center gap-1.5 pr-2 text-left font-mono', off && 'text-[var(--node-muted)]')}
+          className={cn('flex min-w-0 items-center gap-1.5 pr-2 text-left font-mono text-xs', off && 'text-[var(--node-muted)]')}
           title={`${props.name} (line ${props.line}). Double-click to rename.`}
           onDoubleClick={() => start('name')}
         >
           <span className={cn('truncate', off && 'line-through decoration-[color-mix(in_srgb,var(--node-muted)_60%,transparent)]')}>{props.name}</span>
           {props.twice && !off && (
-            <Badge size="sm" shape="rounded" color="amber" className="tabular-nums" title="It’s on more than once: this one counts (the last)">
+            <Chip color="amber" title="It’s on more than once: this one counts (the last)">
               ×2
-            </Badge>
+            </Chip>
           )}
           {off && (
-            <Badge size="sm" shape="rounded" className="text-[var(--node-muted)]">
-              Off
-            </Badge>
+            <Chip className="font-sans">Off</Chip>
           )}
         </button>
       )}
@@ -106,7 +106,7 @@ export function Row(props: {
           rows={Math.min(6, draft.split('\n').length)}
           className={cn(
             UNDER,
-            'rounded-control my-1 min-w-0 resize-none border border-[var(--node-accent)] bg-transparent px-2 py-1 font-mono text-xs shadow-[0_0_0_2px_color-mix(in_srgb,var(--node-accent)_22%,transparent)] outline-none',
+            'rounded-control my-1 min-w-0 resize-none border border-[var(--node-accent)] bg-transparent px-2.5 py-1 font-mono text-xs leading-5 shadow-[0_0_0_3px_color-mix(in_srgb,var(--node-accent)_16%,transparent)] outline-none',
           )}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -116,7 +116,7 @@ export function Row(props: {
       ) : (
         <button
           type="button"
-          className={cn(UNDER, 'min-w-0 truncate text-left font-mono', (!props.reveal || off) && 'text-[var(--node-muted)]', off && 'opacity-70')}
+          className={cn(UNDER, 'min-w-0 truncate text-left font-mono text-xs', (!props.reveal || off) && 'text-[var(--node-muted)]', off && 'opacity-70')}
           onDoubleClick={() => start('value')}
           title="Double-click to change it"
         >
@@ -129,17 +129,17 @@ export function Row(props: {
               props.value
             )
           ) : (
-            <span className="tracking-widest">{MASK}</span>
+            <span className="tracking-[0.2em] opacity-70">{MASK}</span>
           )}
         </button>
       )}
       {editing ? (
-        <div className="flex flex-none pl-1">
+        <div className="flex flex-none ps-2">
           <ToolButton label="Save (Enter)" icon={Check} onClick={() => void save()} />
           <ToolButton label="Cancel (Escape)" icon={X} onClick={() => setEditing(null)} />
         </div>
       ) : (
-        <div className="flex flex-none pl-1 opacity-0 group-hover:opacity-100 has-[:focus-visible]:opacity-100 touch:opacity-100">
+        <div className="flex flex-none ps-2 opacity-0 transition-opacity duration-100 group-hover:opacity-100 has-[:focus-visible]:opacity-100 touch:opacity-100">
           <ToolButton label={props.reveal ? 'Hide' : 'Show'} icon={props.reveal ? EyeOff : Eye} onClick={props.onToggle} />
           <ToolButton label="Copy the value" icon={Copy} onClick={props.onCopy} />
           <ToolButton label="Change the value" icon={Pencil} onClick={() => start('value')} />

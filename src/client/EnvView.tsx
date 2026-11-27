@@ -9,13 +9,16 @@
 // a Row.tsx), Compare is Compare.tsx.
 
 import { useEffect, useState } from 'react';
-import { CircleAlert, Eye, EyeOff, FileKey, FilePlus, FolderOpen, Rows3, Server, Table2, TriangleAlert } from 'lucide-react';
+import { CircleAlert, Eye, EyeOff, FileKey, FilePlus, FolderOpen, Rows3, Server, Table2, TriangleAlert } from '@hyperpane/icons';
 import { useData, useHost, useProject } from '@hyperpane/sdk/client';
-import { Empty, NodeButton, Picker, Spinner, Toolbar, ToolButton, cn } from '@hyperpane/ui';
+import { Button, Empty, HeaderBar, Picker, Spinner, ToolButton, cn } from '@hyperpane/ui';
 import type { EnvFile, EnvState } from '../shared/index.ts';
+import { Banner } from './Banner.tsx';
 import { Compare } from './Compare.tsx';
 import { FileView } from './FileView.tsx';
 import { type Call, newFile, warning } from './lib.ts';
+import { ACCENT } from './accent.ts';
+
 
 const ID = 'env';
 
@@ -52,26 +55,26 @@ export function EnvView() {
   }, [project?.id, host]);
 
   if (!project)
-    return <Empty bordered={false} className="h-full" icon={<FolderOpen />} title="No project" description="Open a project to see its .env files." />;
+    return <Empty size="compact" className="h-full" icon={<FolderOpen />} title="No project" description="Open a project to see its .env files." />;
   if (error)
     return (
       <Empty
-        bordered={false}
+        size="compact"
         className="h-full"
-        icon={<CircleAlert className="text-[var(--ansi-1)]" />}
+        icon={<CircleAlert className="text-[var(--destructive-soft-foreground)]" />}
         title="Couldn’t read the .env files"
         description={error}
       />
     );
   if (!state)
     return (
-      <div className="flex h-full items-center justify-center gap-2 text-xs text-[var(--node-muted)]">
-        <Spinner size="xs" />
+      <div className="flex h-full items-center justify-center gap-2 text-[13px] text-[var(--node-muted)]">
+        <Spinner size="sm" />
         Looking for .env files
       </div>
     );
   if (state.elsewhere)
-    return <Empty bordered={false} className="h-full" icon={<Server />} title="On another server" description="This project’s folder is on another server." />;
+    return <Empty size="compact" className="h-full" icon={<Server />} title="On another server" description="This project’s folder is on another server." />;
 
   const call: Call = (req) =>
     host.call(ID, { project: project.id, ...req }).then(
@@ -88,21 +91,23 @@ export function EnvView() {
   if (!files.length) return <NoFiles call={call} />;
 
   return (
-    <div className="flex h-full flex-col text-xs text-[var(--node-fg)]">
-      <Toolbar>
+    <div className="flex h-full flex-col text-[13px] leading-5 text-[var(--node-fg)]" style={ACCENT}>
+      {/* The window's one bar: which file (or Compare), then the tools. */}
+      <HeaderBar className="gap-1 px-2">
         <div className="flex min-w-0 flex-1 items-center">
           {compare ? (
-            <span className="flex h-7 items-center gap-2 px-2 font-medium">
-              <Table2 className="size-3.5 text-[var(--node-muted)]" />
-              Every variable in every file
+            <span className="flex h-7 min-w-0 items-center gap-2 px-2.5 font-medium">
+              <Table2 className="size-4 flex-none text-[var(--node-muted)]" />
+              <span className="truncate">Every variable in every file</span>
+              <span className="flex-none text-xs font-normal text-[var(--node-muted)] tabular-nums">{files.length} files</span>
             </span>
           ) : (
             <Picker
               label="File"
               size="sm"
               ghost
-              className={cn('font-mono', file?.example && 'italic')}
-              icon={file && warning(file) ? <TriangleAlert className="text-[var(--ansi-3)]" /> : <FileKey className="text-[var(--node-muted)]" />}
+              className={cn('font-mono text-[13px] [&_svg]:size-4', file?.example && 'italic')}
+              icon={file && warning(file) ? <TriangleAlert className="text-[var(--amber-soft-foreground)]" /> : <FileKey className="text-[var(--node-muted)]" />}
               value={file?.path ?? null}
               options={files.map((f) => ({ value: f.path, label: f.path, detail: `${count(f)}${warning(f) ? ' ⚠' : ''}` }))}
               onValueChange={setChosen}
@@ -123,14 +128,13 @@ export function EnvView() {
           disabled={files.length < 2 && !compare}
         />
         <ToolButton label="New .env file" icon={FilePlus} onClick={() => void newFile(host, call, files)} />
-      </Toolbar>
+      </HeaderBar>
       {notHere && (
-        <div className="flex flex-none items-start gap-2 border-b border-[var(--node-border)] bg-[color-mix(in_srgb,var(--ansi-3)_8%,var(--node-bg))] px-3 py-2">
-          <TriangleAlert className="mt-0.5 size-3.5 flex-none text-[var(--ansi-3)]" />
-          <span>
-            <span className="font-mono">{notHere}</span> isn’t one of this project’s .env files: it’s outside the project’s folder, or more than three folders
-            down, or not named as one.
-          </span>
+        <div className="flex-none px-3 pt-3">
+          <Banner>
+            <span className="font-mono text-xs">{notHere}</span> isn’t one of this project’s .env files: it’s outside the project’s folder, or more than three
+            folders down, or not named as one.
+          </Banner>
         </div>
       )}
       <div className="min-h-0 flex-1 overflow-auto">
@@ -147,16 +151,16 @@ export function EnvView() {
 function NoFiles({ call }: { call: Call }) {
   return (
     <Empty
-      bordered={false}
+      size="compact"
       className="h-full"
       icon={<FileKey />}
       title="No .env files"
       description="This project has no .env file yet."
       action={
-        <NodeButton variant="primary" onClick={() => void call({ op: 'create', file: '.env' })}>
-          <FilePlus />
+        <Button size="sm" onClick={() => void call({ op: 'create', file: '.env' })}>
+          <FilePlus className="size-3.5" />
           Create .env
-        </NodeButton>
+        </Button>
       }
     />
   );

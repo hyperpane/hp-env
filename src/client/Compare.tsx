@@ -5,7 +5,7 @@
 
 import { useMemo } from 'react';
 import { useHost } from '@hyperpane/sdk/client';
-import { ColumnResizer, cn, styles, useColumnWidths } from '@hyperpane/ui';
+import { Chip, ColumnResizer, cn, styles, useColumnWidths } from '@hyperpane/ui';
 import type { EnvFile } from '../shared/index.ts';
 import { type Call, MASK } from './lib.ts';
 
@@ -32,7 +32,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
     <ColumnResizer width={width(k)} onResize={(w) => cols.set(k, w)} onReset={() => cols.set(k, k === 'variable' ? VARIABLE : FILE)} />
   );
   return (
-    <table className="w-full table-fixed border-collapse text-xs">
+    <table className="w-full table-fixed border-collapse text-[13px]">
       <colgroup>
         <col style={{ width: width('variable') }} />
         {shownFiles.map((f) => (
@@ -42,7 +42,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
       </colgroup>
       <thead className={cn(styles.stickyTableHead, 'bg-[var(--node-bg)]')}>
         <tr>
-          <th className="relative h-7 truncate border-b border-[var(--node-border)] px-3 text-left font-medium text-[var(--node-muted)]">
+          <th className="relative h-8 truncate border-b border-[var(--hairline)] px-4 text-left text-xs font-medium text-[var(--node-muted)]">
             Variable
             {resizer('variable')}
           </th>
@@ -50,7 +50,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
             <th
               key={f.path}
               className={cn(
-                'relative h-7 truncate border-b border-[var(--node-border)] px-3 text-left font-mono font-medium text-[var(--node-muted)]',
+                'relative h-8 truncate border-b border-[var(--hairline)] px-3 text-left font-mono text-xs font-medium text-[var(--node-muted)]',
                 f.example && 'italic',
               )}
               title={f.path}
@@ -59,7 +59,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
               {resizer(f.path)}
             </th>
           ))}
-          <th className="border-b border-[var(--node-border)]" />
+          <th className="border-b border-[var(--hairline)]" />
         </tr>
       </thead>
       <tbody>
@@ -67,23 +67,26 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
           const values = shownFiles.map((f) => value(f, key));
           const differ = new Set(values.filter((x) => x !== undefined)).size > 1;
           return (
-            <tr key={key} className="transition-colors duration-75 hover:bg-[var(--node-hover)]">
-              <td className="h-7 truncate px-3 font-mono touch:h-10" title={key}>
+            <tr key={key} className="transition-colors duration-100 hover:bg-[var(--node-hover)]">
+              <td className="h-8 truncate px-4 font-mono text-xs touch:h-11" title={key}>
                 {key}
                 {differ && (
-                  <span className="ml-1.5 text-[var(--ansi-3)]" title="Not the same in every file">
+                  <Chip color="amber" className="ms-2 font-sans" title="Not the same in every file">
                     ≠
-                  </span>
+                  </Chip>
                 )}
               </td>
               {shownFiles.map((f, i) => {
                 const val = values[i];
                 return (
-                  <td key={f.path} className="h-7 truncate px-3 font-mono touch:h-10">
+                  <td key={f.path} className="h-8 truncate px-3 font-mono text-xs touch:h-11">
                     {val === undefined ? (
                       <button
                         type="button"
-                        className="rounded-chip font-sans text-[var(--ansi-1)] hover:underline"
+                        className={cn(
+                          'rounded-chip inline-flex h-5 items-center bg-[color-mix(in_srgb,var(--destructive-soft-foreground)_12%,transparent)] px-1.5 font-sans text-[11px] font-medium text-[var(--destructive-soft-foreground)] transition-colors duration-100 hover:bg-[color-mix(in_srgb,var(--destructive-soft-foreground)_20%,transparent)]',
+                          styles.focusRing,
+                        )}
                         title={`Not in ${f.path}: add it`}
                         onClick={async () => {
                           const v = await host.ui.prompt({
