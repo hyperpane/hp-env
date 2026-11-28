@@ -108,7 +108,7 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
       </div>
 
       {rows.length > 0 && (
-        <div className={cn(styles.stickyTop, 'border-b border-[var(--hairline)] bg-[var(--node-bg)] px-1.5')}>
+        <div className={cn(styles.stickyTop, 'border-b border-[var(--hairline)] bg-[var(--node-bg)] px-2')}>
           <div className={cn(COLUMNS, 'h-8 px-0 text-xs font-medium text-[var(--node-muted)] touch:h-10')}>
             <span className="flex items-center justify-center" title="On: used. Off: commented out (# NAME=value).">
               On
@@ -121,9 +121,9 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
           </div>
         </div>
       )}
-      {rows.length === 0 && <p className="px-4 py-3 text-xs text-[var(--node-muted)]">Nothing in it yet</p>}
-      {rows.length > 0 && visible.length === 0 && <p className="px-4 py-3 text-xs text-[var(--node-muted)]">No variable matches “{filter}”.</p>}
-      <div className="flex flex-col px-1.5 pt-1">
+      {rows.length === 0 && <p className="px-3 py-3 text-xs text-[var(--node-muted)]">Nothing in it yet</p>}
+      {rows.length > 0 && visible.length === 0 && <p className="px-3 py-3 text-xs text-[var(--node-muted)]">No variable matches “{filter}”.</p>}
+      <div className="flex flex-col px-2 pt-1">
         {visible.map((e) => (
           <Row
             key={e.line}
@@ -194,9 +194,9 @@ export function FileView({ file, files, revealAll, call }: { file: EnvFile; file
         {keyProblem && <p className="ps-9 text-xs text-[var(--destructive-soft-foreground)]">{keyProblem}</p>}
       </div>
       {missing.length > 0 && example && (
-        <div className="mt-3 px-1.5">
-          <SectionHeader label={<>In <span className="font-mono normal-case tracking-normal">{example.path}</span>, not here</>} count={missing.length} />
-          <div className="flex flex-wrap gap-1.5 px-2.5 pt-1">
+        <div className="mt-3 px-3">
+          <SectionHeader className="px-0" label={<>In <span className="font-mono normal-case tracking-normal">{example.path}</span>, not here</>} count={missing.length} />
+          <div className="flex flex-wrap gap-1.5 pt-1">
             {missing.map((e) => (
               <Button
                 key={e.key}

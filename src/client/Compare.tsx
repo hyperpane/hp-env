@@ -42,7 +42,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
       </colgroup>
       <thead className={cn(styles.stickyTableHead, 'bg-[var(--node-bg)]')}>
         <tr>
-          <th className="relative h-8 truncate border-b border-[var(--hairline)] px-4 text-left text-xs font-medium text-[var(--node-muted)]">
+          <th className="relative h-8 truncate border-b border-[var(--hairline)] px-3 text-left text-xs font-medium text-[var(--node-muted)]">
             Variable
             {resizer('variable')}
           </th>
@@ -68,7 +68,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
           const differ = new Set(values.filter((x) => x !== undefined)).size > 1;
           return (
             <tr key={key} className="transition-colors duration-100 hover:bg-[var(--node-hover)]">
-              <td className="h-8 truncate px-4 font-mono text-xs touch:h-11" title={key}>
+              <td className="h-8 truncate px-3 font-mono text-xs touch:h-11" title={key}>
                 {key}
                 {differ && (
                   <Chip color="amber" className="ms-2 font-sans" title="Not the same in every file">
@@ -84,7 +84,7 @@ export function Compare({ files, reveal, call }: { files: EnvFile[]; reveal: boo
                       <button
                         type="button"
                         className={cn(
-                          'rounded-chip inline-flex h-5 items-center bg-[color-mix(in_srgb,var(--destructive-soft-foreground)_12%,transparent)] px-1.5 font-sans text-[11px] font-medium text-[var(--destructive-soft-foreground)] transition-colors duration-100 hover:bg-[color-mix(in_srgb,var(--destructive-soft-foreground)_20%,transparent)]',
+                          'inline-flex h-5 rounded-full items-center bg-[color-mix(in_srgb,var(--destructive-soft-foreground)_12%,transparent)] px-1.5 font-sans text-[11px] font-medium text-[var(--destructive-soft-foreground)] transition-colors duration-100 hover:bg-[color-mix(in_srgb,var(--destructive-soft-foreground)_20%,transparent)]',
                           styles.focusRing,
                         )}
                         title={`Not in ${f.path}: add it`}

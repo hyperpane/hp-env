@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from 'react';
 import { CircleAlert, Eye, EyeOff, FileKey, FilePlus, FolderOpen, Rows3, Server, Table2, TriangleAlert } from '@hyperpane/icons';
-import { useData, useHost, useProject } from '@hyperpane/sdk/client';
+import { useBack, useData, useHost, useProject } from '@hyperpane/sdk/client';
 import { Button, Empty, HeaderBar, Picker, Spinner, ToolButton, cn } from '@hyperpane/ui';
 import type { EnvFile, EnvState } from '../shared/index.ts';
 import { Banner } from './Banner.tsx';
@@ -33,6 +33,8 @@ export function EnvView() {
   const [chosen, setChosen] = useState<string | null>(null);
   const [compare, setCompare] = useState(false);
   const [revealAll, setRevealAll] = useState(false);
+  // Back: from Compare to the one file, as its button does.
+  useBack(compare ? () => setCompare(false) : null);
   // A file it was opened with (from Explorer, or dropped): its tab.
   const data = useData();
   const opened = relative(project?.folder ?? null, data.path ?? null);

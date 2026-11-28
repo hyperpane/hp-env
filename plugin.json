@@ -2,7 +2,7 @@
   "manifest": 1,
   "id": "env",
   "name": "Env",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "publisher": "hyperpane",
   "description": "Your project's .env files, every secret hidden until you look: change values in place with comments kept, compare files side by side, and a warning when git has your secrets.",
   "icon": "icon.svg",

@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { Check, Copy, Eye, EyeOff, Pencil, Trash2, X } from '@hyperpane/icons';
-import { Checkbox, Chip, Input, ToolButton, cn } from '@hyperpane/ui';
+import { Checkbox, Chip, Input, ToolButton, cn, isComposing } from '@hyperpane/ui';
 import { KEY_NAME } from '../shared/index.ts';
 import { MASK } from './lib.ts';
 
@@ -48,7 +48,7 @@ export function Row(props: {
     if (ok) setEditing(null);
   };
   const keys = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !isComposing(e) && !e.shiftKey) {
       e.preventDefault();
       void save();
     } else if (e.key === 'Escape') setEditing(null);
